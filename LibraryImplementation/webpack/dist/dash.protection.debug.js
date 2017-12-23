@@ -1386,9 +1386,9 @@ function ProtectionController(config) {
         }
         updateHeaders(keySystem.getRequestHeadersFromMessage(message));
 
-        // Set withCredentials property from protData
-        if (protData && protData.withCredentials) {
-            xhr.withCredentials = true;
+        // Overwrite withCredentials property from protData if present
+        if (protData && typeof protData.withCredentials == 'boolean') {
+            xhr.withCredentials = protData.withCredentials;
         }
 
         xhr.send(keySystem.getLicenseRequestFromMessage(message));

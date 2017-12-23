@@ -386,6 +386,6 @@ module.exports = function (grunt) {
     grunt.registerTask('debug', ['clean', 'browserify:all', 'exorcise:all', 'copy:dist']);
     grunt.registerTask('lint', ['jshint', 'jscs']);
     grunt.registerTask('prepublish', ['githooks', 'dist']);
-    grunt.registerTask('dev', ['browserSync', 'watch-dev']);
+    grunt.registerTask('dev', ['browserSync', 'watch-dev','npm']);
     grunt.registerTask('deploy', ['ftp_push']);
 };
