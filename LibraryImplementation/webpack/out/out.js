@@ -15068,6 +15068,7 @@ player.on("click", function (e) {
     alert("player clicked");
 });
 var playerTag = document.querySelector('#myMainVideoPlayer');
+var systemInfo = chrome.system;
 
 // updateMetrics("video",player);
 player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
@@ -15078,6 +15079,14 @@ player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
 player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_RENDERED, function (e) {
     console.log("Quality change rendered");
     updateMetrics("video", player);
+    // chrome.processes.onUpdatedWithMemory.addListener((obj)=>{
+    //     console.log(obj);
+    // });
+
+    console.log(systemInfo);
+    // systemInfo.memory.getInfo((info)=>{
+    //     console.log(info);
+    // });
 });
 // player.on(dashjs.MediaPlayer.events.S, function (e) {
 //     console.log("Quality change rendered");
