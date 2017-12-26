@@ -15064,29 +15064,67 @@ console.log("Metrics");
 console.log(player.getLiveDelay());
 console.log("matewete");
 player.on("click", function (e) {
-
     alert("player clicked");
 });
+
 var playerTag = document.querySelector('#myMainVideoPlayer');
 var systemInfo = chrome.system;
 
+// player.get
+
+
 // updateMetrics("video",player);
 player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
+
     console.log("Stream initialized");
+    console.log(Date.now());
     updateMetrics("video", player);
 });
 
+player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, function (e) {
+    console.log("Playback started");
+    console.log(Date.now());
+    // updateMetrics("video", player);
+});
+player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
+    console.log("Playback ended");
+    console.log(Date.now());
+
+    // updateMetrics("video", player);
+});
+
+player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
+    console.log("Manifest loaded");
+    console.log(Date.now());
+
+    // updateMetrics("video", player);
+});
+
 player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_RENDERED, function (e) {
+    console.log(Date.now());
     console.log("Quality change rendered");
     updateMetrics("video", player);
     // chrome.processes.onUpdatedWithMemory.addListener((obj)=>{
     //     console.log(obj);
+    //     console.log("hellow in cpu");
+    //     console.log(data);
     // });
 
-    console.log(systemInfo);
-    // systemInfo.memory.getInfo((info)=>{
-    //     console.log(info);
+    // chrome.tabs.getCurrent((tab)=>{
+    //
+    //     console.log("tabs");
+    //     console.log(tab);
+    //
     // });
+    // console.log("tabs");
+    //     chrome.tabs.query({active:true,windowType:"normal", currentWindow: true},function(d){console.debug(d[0].id);})
+    //
+    //
+    //     console.log(systemInfo);
+    //     systemInfo.memory.getInfo((info)=>{
+    //         console.log("memory");
+    //         console.log(info);
+    //     });
 });
 // player.on(dashjs.MediaPlayer.events.S, function (e) {
 //     console.log("Quality change rendered");

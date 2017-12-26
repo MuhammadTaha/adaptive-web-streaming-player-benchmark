@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: './src/entry.js',
@@ -11,7 +12,13 @@ module.exports = {
             inject: true,
             filename: 'index.html',
             template: 'index.html'
-        })
+        }),
+        new CopyWebpackPlugin([
+                // {output}/file.txt
+                { from: 'src/main.js', to: 'main.js' },
+                { from: 'src/manifest.json', to: 'manifest.json' },
+
+        ])
     ],
     module: {
         loaders: [
