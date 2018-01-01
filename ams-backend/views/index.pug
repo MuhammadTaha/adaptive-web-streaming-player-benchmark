@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to Adaptive Media Streaming Reporting System
+  
+  ul
+  each val, index in metrics
+     each val1, index1 in val
+        li= index1 + ': ' + val1
+
+  table(border='1')
+    thead 
+         tr
+            th id
+            th Name
+    tbody
+        each val, i in metrics
+            tr
+               td= val.id 
+               td= val.name      
