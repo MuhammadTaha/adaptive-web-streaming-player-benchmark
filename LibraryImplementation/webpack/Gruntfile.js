@@ -343,36 +343,36 @@ module.exports = function (grunt) {
                 'pre-commit': 'lint'
             }
         },
-        ftp_push: {
-            deployment: {
-                options: {
-                    host: grunt.option('ftp-host'),
-                    dest: '/',
-                    username: grunt.option('ftp-user'),
-                    password: grunt.option('ftp-pass'),
-                    hideCredentials: true,
-                    // disabling incrementalUpdates because this option is not working fine
-                    incrementalUpdates: false,
-                    debug: false,
-                    port: 21
-                },
-                files: [
-                    {
-                        expand: true,
-                        cwd: '.',
-                        src: [
-                            'contrib/**',
-                            'dist/**',
-                            'test/functional/test.html',
-                            'test/functional/testsCommon.js',
-                            'test/functional/config/**',
-                            'test/functional/tests/**',
-                            'samples/dash-if-reference-player/**'
-                        ]
-                    }
-                ]
-            }
-        }
+        // ftp_push: {
+        //     deployment: {
+        //         options: {
+        //             host: grunt.option('ftp-host'),
+        //             dest: '/',
+        //             username: grunt.option('ftp-user'),
+        //             password: grunt.option('ftp-pass'),
+        //             hideCredentials: true,
+        //             // disabling incrementalUpdates because this option is not working fine
+        //             incrementalUpdates: false,
+        //             debug: false,
+        //             port: 21
+        //         },
+        //         files: [
+        //             {
+        //                 expand: true,
+        //                 cwd: '.',
+        //                 src: [
+        //                     'contrib/**',
+        //                     'dist/**',
+        //                     'test/functional/test.html',
+        //                     'test/functional/testsCommon.js',
+        //                     'test/functional/config/**',
+        //                     'test/functional/tests/**',
+        //                     'samples/dash-if-reference-player/**'
+        //                 ]
+        //             }
+        //         ]
+        //     }
+        // }
     });
 
     require('load-grunt-tasks')(grunt);

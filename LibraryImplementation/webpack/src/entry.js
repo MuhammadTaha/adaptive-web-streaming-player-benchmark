@@ -2,10 +2,20 @@ import {MediaPlayer, Debug} from 'dashjs';
 // import {MediaPlayer, Debug} from '';
 
 // require('../../webpack/src');
-// import {} from 'stream';
+import {} from "stream";
 // import {VideoModel} from 'dashjs';
 
 // import {} from "";
+
+
+// Time to playback start
+// Manifest parsing time
+// Segment conversion
+// CPU load
+// Frames per second
+// Memory load
+// Dropped frames
+// Rendered frames
 
 
 let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
@@ -41,6 +51,11 @@ player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
 player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, function (e) {
     console.log("Playback started");
     console.log(Date.now());
+
+    loadWindowList();
+
+    console.log("stream info");
+    console.log(player.getActiveStream().getStreamInfo());
     // updateMetrics("video", player);
 });
 player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
@@ -130,7 +145,32 @@ function updateMetrics(type, player) {
 
 }
 
+function loadWindowList() {
 
+    console.log("chrome tabs");
+    console.log(chrome.tabs);
+
+
+
+    // chrome.windows.getAll({ populate: true }, function(windowList) {
+    //     tabs = {};
+    //     tabIds = [];
+    //     for (var i = 0; i < windowList.length; i++) {
+    //         windowList[i].current = (windowList[i].id == currentWindowId);
+    //         windowList[i].focused = (windowList[i].id == focusedWindowId);
+    //         for (var j = 0; j < windowList[i].tabs.length; j++) {
+    //             tabIds[tabIds.length] = windowList[i].tabs[j].id;
+    //             tabs[windowList[i].tabs[j].id] = windowList[i].tabs[j];
+    //         }
+    //     }
+    //
+    //
+    //     console.log(windowList);
+    //     // var input = new JsExprContext(windowList);
+    //     // var output = document.getElementById('windowList');
+    //     // jstProcess(input, output);
+    // });
+}
 // let dF = new DroppedFrames();
 // console.log(dF.droppedFrames);
 // let dropFrames =  dashjs.DroppedFrames();
