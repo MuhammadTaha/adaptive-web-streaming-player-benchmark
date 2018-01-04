@@ -15192,13 +15192,13 @@ __webpack_require__(67);
 // Memory load
 // Dropped frames
 // Rendered frames
-
-
-var url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
+console.log("entry");
 // import {MediaPlayer, Debug} from '';
 
 // require('../../webpack/src');
 
+console.log(chrome.tabs);
+var url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
 
 var player = dashjs.MediaPlayer().create();
 player.initialize(document.querySelector('#myMainVideoPlayer'), url, true);
@@ -15321,25 +15321,34 @@ function loadWindowList() {
     console.log("chrome tabs");
     console.log(chrome.tabs);
 
-    // chrome.windows.getAll({ populate: true }, function(windowList) {
-    //     tabs = {};
-    //     tabIds = [];
-    //     for (var i = 0; i < windowList.length; i++) {
-    //         windowList[i].current = (windowList[i].id == currentWindowId);
-    //         windowList[i].focused = (windowList[i].id == focusedWindowId);
-    //         for (var j = 0; j < windowList[i].tabs.length; j++) {
-    //             tabIds[tabIds.length] = windowList[i].tabs[j].id;
-    //             tabs[windowList[i].tabs[j].id] = windowList[i].tabs[j];
-    //         }
-    //     }
-    //
-    //
-    //     console.log(windowList);
-    //     // var input = new JsExprContext(windowList);
-    //     // var output = document.getElementById('windowList');
-    //     // jstProcess(input, output);
-    // });
+    chrome.windows.getAll({ populate: true }, function (windowList) {
+        //     tabs = {};
+        //     tabIds = [];
+        //     for (var i = 0; i < windowList.length; i++) {
+        //         windowList[i].current = (windowList[i].id == currentWindowId);
+        //         windowList[i].focused = (windowList[i].id == focusedWindowId);
+        //         for (var j = 0; j < windowList[i].tabs.length; j++) {
+        //             tabIds[tabIds.length] = windowList[i].tabs[j].id;
+        //             tabs[windowList[i].tabs[j].id] = windowList[i].tabs[j];
+        //         }
+        //     }
+        //
+        //
+        console.log(windowList);
+        //     // var input = new JsExprContext(windowList);
+        //     // var output = document.getElementById('windowList');
+        //     // jstProcess(input, output);
+    });
 }
+
+chrome.tabs.getCurrent(function (tab) {
+    console.log(tab);
+});
+chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+    console.log('entry');
+    console.log(tabs[0].url);
+});
+
 // let dF = new DroppedFrames();
 // console.log(dF.droppedFrames);
 // let dropFrames =  dashjs.DroppedFrames();

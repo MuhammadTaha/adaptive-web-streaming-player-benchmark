@@ -16,8 +16,8 @@ import {} from "stream";
 // Memory load
 // Dropped frames
 // Rendered frames
-
-
+console.log("entry");
+console.log(chrome.tabs);
 let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
 
 let player = dashjs.MediaPlayer().create();
@@ -152,7 +152,7 @@ function loadWindowList() {
 
 
 
-    // chrome.windows.getAll({ populate: true }, function(windowList) {
+    chrome.windows.getAll({ populate: true }, function(windowList) {
     //     tabs = {};
     //     tabIds = [];
     //     for (var i = 0; i < windowList.length; i++) {
@@ -165,12 +165,23 @@ function loadWindowList() {
     //     }
     //
     //
-    //     console.log(windowList);
+        console.log(windowList);
     //     // var input = new JsExprContext(windowList);
     //     // var output = document.getElementById('windowList');
     //     // jstProcess(input, output);
-    // });
+    });
 }
+
+
+chrome.tabs.getCurrent(function(tab){
+        console.log(tab);
+    }
+);
+chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+    console.log('entry');
+    console.log(tabs[0].url);
+});
+
 // let dF = new DroppedFrames();
 // console.log(dF.droppedFrames);
 // let dropFrames =  dashjs.DroppedFrames();
