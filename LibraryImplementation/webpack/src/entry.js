@@ -1,11 +1,4 @@
 import {MediaPlayer, Debug} from 'dashjs';
-// import {MediaPlayer, Debug} from '';
-
-// require('../../webpack/src');
-import {} from "stream";
-// import {VideoModel} from 'dashjs';
-
-// import {} from "";
 
 
 // Time to playback start
@@ -16,14 +9,22 @@ import {} from "stream";
 // Memory load
 // Dropped frames
 // Rendered frames
-console.log("entry");
-console.log(chrome.tabs);
+
+
 let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
+
+
+let elementTag = document.getElementsByTagName("video");
+let btnBenchmark = document.createElement("button");
+btnBenchmark.innerText= "Start Benchmarking";
+// console.log(elementTag[0].firstChild);
+// elementTag[0].append("<button type='button'> Start Benchmarking</button>")
+elementTag[0].parentNode.insertBefore(btnBenchmark,elementTag[0]);
+
+console.log(elementTag);
 
 let player = dashjs.MediaPlayer().create();
 player.initialize(document.querySelector('#myMainVideoPlayer'), url, true);
-console.log("Metrics");
-// console.log(player.getActiveStream().getMetricsFor('video'));
 // let vm = new VideoModel();
 console.log(player.getLiveDelay());
 console.log("matewete");
@@ -36,10 +37,20 @@ player.on("click", function (e) {
 let playerTag = document.querySelector('#myMainVideoPlayer');
 let systemInfo = chrome.system;
 
-// player.get
+// player.getMetricsFor(type)
 
 
 // updateMetrics("video",player);
+
+
+player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
+    console.log("Manifest loaded");
+    console.log(Date.now());
+
+    console.log("Memory performance");
+    console.log(window.performance.memory);
+    // updateMetrics("video", player);
+});
 player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
 
 
@@ -51,6 +62,9 @@ player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
 player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, function (e) {
     console.log("Playback started");
     console.log(Date.now());
+    console.log("Memory performance");
+    console.log(window.performance.memory);
+
 
     loadWindowList();
 
@@ -66,21 +80,33 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
     // updateMetrics("video", player);
 });
 
-player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
-    console.log("Manifest loaded");
+
+player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_REQUESTED, function (e) {
     console.log(Date.now());
+    console.log("Memory performance");
+    console.log(window.performance.memory);
 
+    console.log("Quality change rendered");
+    updateMetrics("video", player);
 
-    // updateMetrics("video", player);
 });
-
 
 
 player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_RENDERED, function (e) {
     console.log(Date.now());
+    console.log("Memory performance");
+    console.log(window.performance.memory);
     console.log("Quality change rendered");
     updateMetrics("video", player);
-    // chrome.processes.onUpdatedWithMemory.addListener((obj)=>{
+
+});
+// player.on(dashjs.MediaPlayer.events.Qua, function (e) {
+//     console.log(Date.now());
+//     console.log("Quality change rendered");
+//     updateMetrics("video", player);
+//
+// });
+// chrome.processes.onUpdatedWithMemory.addListener((obj)=>{
     //     console.log(obj);
     //     console.log("hellow in cpu");
     //     console.log(data);
@@ -101,7 +127,7 @@ player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_RENDERED, function (e) {
 //         console.log("memory");
 //         console.log(info);
 //     });
-});
+
 // player.on(dashjs.MediaPlayer.events.S, function (e) {
 //     console.log("Quality change rendered");
 //     updateMetrics("video",player);
@@ -138,10 +164,12 @@ function updateMetrics(type, player) {
 
 
     console.log("metrices");
-    console.log(repSwitch);
-    console.log(dashMetrics.getCurrentDroppedFrames(metrics));
-    console.log(player.getStableBufferTime());
-    console.log(bufferLevel + " " + index + " " + droppedFPS);
+    console.log("Get current for"+ player.getQualityFor(type))
+    console.log("get playback rate: "+ player.getPlaybackRate());
+    console.log("Rep Switch : ");console.log(repSwitch);
+    console.log("Current Dropped Frames:");console.log( dashMetrics.getCurrentDroppedFrames(metrics));
+    console.log("Buffer stable time:");console.log(player.getStableBufferTime());
+    console.log("Buffer level" + bufferLevel + " Index " + index + " DroppedFrames" + droppedFPS);
 
 }
 
