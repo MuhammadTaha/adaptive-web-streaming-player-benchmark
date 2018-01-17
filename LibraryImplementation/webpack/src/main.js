@@ -4,9 +4,10 @@
 // );
 console.log(window.performance.memory);
 console.log('main js1');
-chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+
+chrome.tabs.query({currentWindow: false, active: true}, function(tabs){
     console.log('main');
-    console.log(tabs[0]);
+    console.log(tabs);
 });
 
 console.log("in main js");
@@ -19,9 +20,6 @@ console.log("in main js");
 //             width: 800
 //         }
 //     });
-//
-//
-//
 //
 //
 //
@@ -44,5 +42,33 @@ console.log("in main js");
 //         // jstProcess(input, output);
 //     });
 // });
+
+let processInfo = null;
+chrome.tabs.onActivated.addListener((tab)=>{
+
+    chrome.processes.getProcessIdForTab(tab.tabId, (processId)=>{
+
+        chrome.processes.getProcessInfo(processId,true,(processInfo)=>{
+            this.processInfo = processInfo;
+            console.log(processInfo);
+        });
+
+    });
+
+
+});
+
+
+// const EventEmitter = require('events');
+//
+// class MyEmitter extends EventEmitter {}
+//
+// const myEmitter = new MyEmitter();
+// // myEmitter.on('chrome.tabs.onActivated', () => {
+// //     console.log('an event occurred!');
+// // });
+// myEmitter.emit('chrome.tabs.onActivated');
+
+
 console.log(" main tab");
 console.log(chrome.tabs);

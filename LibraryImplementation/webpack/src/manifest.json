@@ -2,7 +2,8 @@
   "name": "dashjs-webpack-sample",
   "version": "0.5",
   "permissions": [
-    "tabs"
+    "tabs",
+    "processes"
   ],
   "minimum_chrome_version": "34",
   "manifest_version": 2,
