@@ -2,7 +2,6 @@
 <html>
     <head>
         <title>Dash.js Rocks</title>
-       
 
         <style>
             video {
@@ -10,13 +9,15 @@
                 height: 360px;
             }
         </style>
-        <!--<script src="../../../dist/dash.all.min.js"></script>-->
+        <script type="text/javascript" src="main.js"></script>
+        <script type="text/javascript" src="content.js"></script>
     </head>
     <body>
+    <!--<h1>Chrome extension</h1>-->
         <div>
-            <video id="myMainVideoPlayer" controls></video>
+            <video id="dashPlayer" controls></video>
         </div>
-        <script type="text/javascript" src="main.js"></script>
+        <div id="host"></div>
         <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/2.6.3/dash.all.min.js"></script>-->
     </body>
 </html>

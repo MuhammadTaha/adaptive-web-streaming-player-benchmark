@@ -1,7 +1,11 @@
 LibraryImplementation/webpack/node_modules
 RestApi/node_modules
 LibraryImplementation/.idea
+<<<<<<< HEAD
+LibraryImplementation/webpack/out
+=======
 KongoPlugin
 RestAPI
 ams-backend/node_modules
 ams-backend/package-lock.json
+>>>>>>> 585ed506bc526f9c79f1d91fe46ba6214568c083
