@@ -12,7 +12,8 @@ import {MediaPlayer, Debug} from 'dashjs';
 
 
 // Initializing Player
-let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
+//let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
+let url =   "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd" ;
 let player = dashjs.MediaPlayer().create();
 player.initialize(document.querySelector('#dashPlayer'), url, false);
 
