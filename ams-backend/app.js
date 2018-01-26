@@ -6,7 +6,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-  port = process.env.PORT || 3000,
+  port = process.env.PORT || 3002,
 /*var index = require('./routes/index');
 var users = require('./routes/users');*/
 
@@ -34,7 +34,7 @@ app.use(bodyParser.json());
 
 /*
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+
 */
 
 //app.use('/', index);
@@ -43,7 +43,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 /*app.get('/reports', function (req, res) {
   res.send('Hello World!')
 });*/
-
+app.use(express.static(path.join(__dirname, 'public')));
 var ams_routes = require('./routes/amsRoutes');
 ams_routes(app);
 

@@ -12,5 +12,9 @@ module.exports = function (app) {
   app.route('/bitrate')
       .post(ams_con.create_bitrate);
 
+  app.route('/playback_delay')
+      .post(ams_con.create_playback_delay);
+    
 
-  }
+
+  };

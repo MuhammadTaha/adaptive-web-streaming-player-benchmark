@@ -14,7 +14,7 @@ module.exports = function (app) {
 
 
   app.route('/')
-      .get(ams_con.list_all_units);
+      .get(ams_con.list_all_playback_delay);
 
 
   };

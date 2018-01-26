@@ -6,3 +6,11 @@ body {
 a {
   color: #00B7FF;
 }
+
+#container {
+
+  height: 400px;
+  width:500px;
+  max-width:550px; 
+ 
+}

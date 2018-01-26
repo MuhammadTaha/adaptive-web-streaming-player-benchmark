@@ -19,21 +19,25 @@ import {MediaPlayer, Debug} from 'dashjs';
 
 //- saving values in array and then creating difference in values to display in graph
 
-let TEST_COUNT = 40;
+let TEST_COUNT = 3;
+let tag = 1;
 let startingTime = 0;
+let myStorage = window.localStorage;
+let storage_item_menifest_load="menifest_load_time_";
+let storage_item_playback_delay="playback_delay_time_";
 
 
 
 // Initializing Player
-//let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
-let url =   "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd" ;
+let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
+//let url =   "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd" ;
 let player = dashjs.MediaPlayer().create();
 player.initialize(document.querySelector('#dashPlayer'), url, false);
 
 startingTime = Date.now();
 
 //initialising local web storage
-let myStorage = window.localStorage;
+
 
 // Adding Button to the player
 let elementTag = document.getElementsByTagName("video");
@@ -46,23 +50,34 @@ btnBench.innerHTML="Start Benchmarking";
 btnBench.className = "btnBenchmark";
 btnBench.name= "btnBenchmark";//auto loop option to the stream
 
+
+let divSendData = document.createElement("div");
+
+let btnSendData = document.createElement("button");
+btnSendData.type="button";
+btnSendData.innerHTML="Send Date";
+btnSendData.className = "btnSendDataBenchmark";
+btnSendData.name= "btnSendDataBenchmark";//auto loop option to the stream
+
+
 //auto loop option to the stream
 elementTag[0].setAttribute("loop",true);
-
-
 console.log(elementTag);
-elementTag[0].setAttribute("loop",true);"btnBenchmark";
-
+// elementTag[0].setAttribute("loop",true);"btnBenchmark";
 btnBench.setAttribute("onclick","playback_restart()");
-
 divBench.appendChild(btnBench) ;
+
+
+//elementTag[1].setAttribute("loop1",true);
+btnSendData.setAttribute("onclick","send_data()");
+divSendData.appendChild(btnSendData) ;
+
 
 let btnBenchmark = document.createElement("button");
 btnBenchmark.innerText= "Start Benchmarking";
-
 elementTag[0].parentNode.insertBefore(divBench,elementTag[0]);
 
- let buttonsBenchmark = document.getElementsByClassName("btnBenchmark");
+let buttonsBenchmark = document.getElementsByClassName("btnBenchmark");
  console.log(buttonsBenchmark);
 
  function playback_restart(){
@@ -72,15 +87,33 @@ elementTag[0].parentNode.insertBefore(divBench,elementTag[0]);
      player.play();
  }
 
-
-
 for (var i = 0; i < buttonsBenchmark.length; i++) {
     buttonsBenchmark[i].addEventListener('click', playback_restart, false);
 
 }
-
-
 console.log(player.getLiveDelay());
+
+// Send Data Button......
+
+
+
+let btnsendAPIdata = document.createElement("button");
+btnsendAPIdata.innerText= "Send Data";
+elementTag[0].parentNode.insertBefore(divSendData,elementTag[0]);
+
+let buttonsSendData = document.getElementsByClassName("btnSendDataBenchmark");
+console.log(buttonsSendData);
+
+
+for (var i = 0; i < buttonsSendData.length; i++) {
+    buttonsSendData[i].addEventListener('click', send_data, false);
+
+}
+
+
+
+
+
 // console.log("matewete");
 // player.on("click", function (e) {
 //     alert("player clicked");
@@ -105,9 +138,10 @@ player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
     console.log("Manifest loaded");
     console.log(Date.now());
 
-
-    myStorage.setItem("manifest_loaded",Date.now());
-
+    //storage_item_menifest_load=storage_item_menifest_load+tag;
+    //myStorage.setItem(storage_item_menifest_load,(Date.now()-startingTime));
+    //storage_item_menifest_load="menifest_load_time_";
+   
     delays["manifestDelay"].push(Date.now()-startingTime);
     console.log(delays);
 
@@ -119,15 +153,18 @@ player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
 
 
     console.log("Stream initialized");
-    console.log(Date.now());
+    //console.log(Date.now());
 
-    delays["streamInitializationDelay"].push();
+    //delays["streamInitializationDelay"].push();
+
+
 
     updateMetrics("video", player);
     // console.log(processInfo);
 
 });
 
+/*
 player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
 
 
@@ -135,11 +172,23 @@ player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
     console.log(Date.now());
     updateMetrics("video", player);
 });
+
+*/
+
+
 player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, function (e) {
     console.log("Playback started");
     console.log(Date.now());
     console.log("Memory performance");
     console.log(window.performance.memory);
+
+
+
+       storage_item_playback_delay=storage_item_playback_delay+tag;
+       myStorage.setItem(storage_item_playback_delay,(Date.now()-startingTime));
+       storage_item_playback_delay="playback_delay_time_";
+       myStorage.setItem("TEST_COUNT",tag);
+
 
     console.log("stream info");
     console.log(player.getActiveStream().getStreamInfo());
@@ -148,14 +197,21 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, function (e) {
 player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
     console.log("Playback ended");
     console.log(Date.now());
+    
+    console.log("TEST_COUNT:" + TEST_COUNT);
+
     // updateMetrics("video", player);
 
     if (TEST_COUNT > 0){
+   
+    tag=tag+1;
+    TEST_COUNT=TEST_COUNT-1;
     player.seek(0);
+    player.play();
     }
     else {
         player.seek(0);
-        player.play();
+        
     }
 
 });
@@ -236,6 +292,62 @@ function updateMetrics(type, player) {
     console.log("Buffer level" + bufferLevel + " Index " + index + " DroppedFrames" + droppedFPS);
 
 }
+
+function send_data(){
+
+    //console.log(" Menifest Delays: ");
+    //console.log(delays["manifestDelay"]);
+     var playback_delay_time = "playback_delay_time_";
+     
+     
+    for(var i=0, len=myStorage.length; i<len; i++) {
+        
+        var key = myStorage.key(i);
+        var value = myStorage[key];
+        console.log("Mystorage Val :"+key + " => " + value);
+        //console.log(playback_delay_time);
+     }   
+       
+        var t;
+        for(var test=1, t=myStorage.getItem("TEST_COUNT"); test<t; test++){ 
+        //playback_delay_time = playback_delay_time + i;
+        //console.log("String Before Matched:"+playback_delay_time);
+        playback_delay_time=playback_delay_time + test;
+        var val = myStorage.getItem(playback_delay_time);
+        console.log(":"+playback_delay_time);      
+                var http = new XMLHttpRequest();
+                 
+                 //console.log("String Matched:"+playback_delay_time);
+                var url = "http://localhost:3002/playback_delay";
+                var params = "client_id=1&session_id=" +  test + "&unit_id=33&value="+ val;
+                http.open("POST", url, true);
+        console.log("param:"+ params); 
+                //Send the proper header information along with the request
+                http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                http.setRequestHeader("Content-length", params.length);
+                http.setRequestHeader("Connection", "close");
+
+                http.onreadystatechange = function() {//Call a function when the state changes.
+                    if(http.readyState == 4 && http.status == 200) {
+                        alert(http.responseText);
+                    }
+                }
+                http.send(params);
+       
+          playback_delay_time= "playback_delay_time_";
+
+        }
+         
+          
+         //localStorage.getItem("bar");  
+
+
+       
+
+    
+    myStorage.clear();
+}   
+
 
 
 
