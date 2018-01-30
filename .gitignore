@@ -2,8 +2,11 @@ LibraryImplementation/webpack/node_modules
 RestApi/node_modules
 LibraryImplementation/.idea
 LibraryImplementation/webpack/out
+dashjs-benchmark/.idea
+dashjs-benchmark/out
+*/node_modules
 KongoPlugin
 RestAPI
+RestAPI/node_modules
 ams-backend/node_modules
-ams-backend/package-lock.json
 
