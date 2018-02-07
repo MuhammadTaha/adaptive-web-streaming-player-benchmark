@@ -8,13 +8,13 @@ module.exports = function (app) {
   console.log("in route");
   
 
-    // ams Routes
+  // ams Routes
   app.route('/units')
       .get(ams_con.list_all_units);
 
 
   app.route('/')
-      .get(ams_con.list_all_playback_delay);
+      .get(ams_con.list_all_metrices);
 
 
   };

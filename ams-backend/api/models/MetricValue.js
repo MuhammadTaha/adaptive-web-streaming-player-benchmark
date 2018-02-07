@@ -4,7 +4,7 @@ var db = require("../../db");
 var sequelize =  db.sequelize,
 Sequelize =  db.Sequelize ;
 
-var Bitrate = sequelize.define('bitrate',{
+var MetricValue = sequelize.define('matric_values',{
   id: {
     type: Sequelize.BIGINT,
     allowNull: false,
@@ -14,8 +14,13 @@ var Bitrate = sequelize.define('bitrate',{
   client_id: {
     type: Sequelize.BIGINT,
     allowNull: false,
+    
   },
-  session_id: {
+  metric_id: {
+    type: Sequelize.BIGINT,
+    allowNull: false,
+  },
+  player_id: {
     type: Sequelize.BIGINT,
     allowNull: false,
   },
@@ -23,11 +28,13 @@ var Bitrate = sequelize.define('bitrate',{
     type: Sequelize.BIGINT,
     allowNull: false,
   },
-    value: {
+  metric_values: {
     type: Sequelize.DECIMAL(10, 2),
     allowNull: false,
   }
+ 
    
 });
   
-module.exports = Bitrate;
+
+module.exports = MetricValue;
