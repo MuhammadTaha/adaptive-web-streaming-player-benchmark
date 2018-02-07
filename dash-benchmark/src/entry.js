@@ -349,24 +349,7 @@ function send_data() {
         //
         // console.log(":" + playback_delay_time);
 
-        var http = new XMLHttpRequest();
-
-        //console.log("String Matched:"+playback_delay_time);
-        var url = "http://localhost:3002/playback_delay";
-        // var params = "client_id= " + browserId + " & session_id=" + session_id + "&unit_id=33&value=" + val;
-        http.open("POST", url, true);
-        // console.log("param:" + params);
-        //Send the proper header information along with the request
-        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        // http.setRequestHeader("Content-length", params.length);
-        http.setRequestHeader("Connection", "close");
-
-        http.onreadystatechange = function () {//Call a function when the state changes.
-            if (http.readyState == 4 && http.status == 200) {
-                alert(http.responseText);
-            }
-        }
-
+        
 
 
 
@@ -390,6 +373,27 @@ function send_data() {
     });
 
 
+      var http = new XMLHttpRequest();
+      var url = "http://localhost:3002/metricvalues";
+      http.open("POST", url, true);
+      
+      http.setRequestHeader('Content-type', 'application/json;charset=utf-8');
+      // http.setRequestHeader("Content-length", params.length);
+      //http.setRequestHeader("Connection", "close");
+      
+      http.onreadystatechange = function () { //Call a function when the state changes.
+            
+            
+           console.log("return text 1 :" + http.responseText);
+            if (http.readyState == 4 && http.status == 200) {
+                //alert(http.responseText);
+
+                console.log("return text:" + http.responseText);
+            }
+        }
+
+       var data = JSON.stringify(delaysCollection);
+        http.send(data);
 
         // http.send(JSON.stringify(delaysCollection));
 
@@ -405,6 +409,11 @@ function send_data() {
     // myStorage.clear();
 }
 
+
+        // var params = "client_id= " + browserId + " & session_id=" + session_id + "&unit_id=33&value=" + val;
+        // console.log("param:" + params);
+        // Send the proper header information along with the request
+        // http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {

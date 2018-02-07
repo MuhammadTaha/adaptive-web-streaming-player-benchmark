@@ -1,7 +1,7 @@
 'use strict';
 
-var Bitrate = require('../models/Bitrate');
-var PlaybackDelay = require('../models/PlaybackDelay');
+var Client = require('../models/Client');
+var MetricValue = require('../models/MetricValue');
 var connection = require('../../db');
 
 
@@ -15,7 +15,7 @@ exports.create_bitrate = function (req, res) {
   if (request['id'])
     delete request['id'];
 
-  Bitrate.create(request)
+  Client.create(request)
     .then(function (newModel) {
 
       console.log(newModel.dataValues);
@@ -29,17 +29,20 @@ exports.create_bitrate = function (req, res) {
     });
 };
 
-exports.create_playback_delay = function (req, res) {
+exports.create_metric_values = function (req, res) {
 
   var request = req.body;
+  res.send("Hello");
 
-   //console.log(request);    
-   //res.status(500).send(req.body);
+   console.log(request);    
 
-  if (request['id'])
-    delete request['id'];
+   //res.end(request[0]["manifestLoad"].toString());
+  // res.status(500).send(request[0]["manifestLoad"].toString());
 
-  PlaybackDelay.create(request)
+/*  if (request['id'])
+    delete request['id'];*/
+/*
+  MetricValue.create(request)
     .then(function (newModel) {
 
       console.log(newModel.dataValues);
@@ -51,4 +54,9 @@ exports.create_playback_delay = function (req, res) {
         res.status(400).send("Invalid input.")
       }
     });
+
+    */
+
+    //return req.body;
+    res.send("Hello");
 };

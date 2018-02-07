@@ -1,7 +1,7 @@
 'use strict';
 
 var Unit = require('../api/models/Unit');
-var PlaybackDelay = require('../api/models/PlaybackDelay');
+var MetricValue = require('../api/models/MetricValue');
 var connection = require('../db');
 
 
@@ -24,11 +24,13 @@ exports.list_all_units = function (req, res) {
 exports.list_all_playback_delay = function (req, res) {
 
   var requestParams = req.params;
+  /*
   if (requestParams) {
     var sessionId = [];
     var playback_vals = [];
     var sData;
-    PlaybackDelay.findAll({ attributes: ['session_id','value'], raw: true }).then(result => {
+
+    MetricValue.findAll({ attributes: ['session_id','value'], raw: true }).then(result => {
       
          result.forEach((result, index) => {
            
@@ -43,6 +45,7 @@ exports.list_all_playback_delay = function (req, res) {
   } else {
     res.status(404).send("No Units exists.");
   }
+  */
 };
 
 
@@ -50,10 +53,18 @@ exports.list_all_playback_delay = function (req, res) {
 exports.list_all_metrices = function (req, res) {
 
   var requestParams = req.params;
+  
+  console.log("Passed Data:" + req);
+
+  res.send("Home");
+  
   if (requestParams) {
+    
     var sessionId = [];
     var playback_vals = [];
     var sData;
+    
+    /*
     PlaybackDelay.findAll({ attributes: ['session_id','value'], raw: true }).then(result => {
       
          result.forEach((result, index) => {
@@ -64,9 +75,13 @@ exports.list_all_metrices = function (req, res) {
          
          });
          res.render('index', {playback_delays : result, session_vals: JSON.stringify(sessionId), playback_delay_time: JSON.stringify(playback_vals) });
+   
+
     });
-  
+
+   */
   } else {
     res.status(404).send("No Units exists.");
   }
+  
 };

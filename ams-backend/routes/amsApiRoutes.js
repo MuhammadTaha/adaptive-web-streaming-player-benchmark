@@ -9,8 +9,8 @@ module.exports = function (app) {
   
 
     // ams API Routes
-  app.route('/metric_values')
-      .post(ams_con.create_metric_values);
+  app.route('/metricvalues')
+  .post(ams_con.create_metric_values);
     
 
 

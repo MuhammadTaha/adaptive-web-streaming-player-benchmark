@@ -1,3 +1,8 @@
+dash-benchmark/out
+dash-benchmark/out/out.js
+dash-benchmark/package-lock.json
+dash-benchmark/dist
+dashjs-benchmark
 dashjs-benchmark/out
 dashjs-benchmark/dist
 KongoPlugin
@@ -8,3 +13,4 @@ ams-backend/node_modules
 */.idea
 */.vcode
 */package-lock.json
+LibraryImplementation
