@@ -15496,6 +15496,8 @@ var _fingerprintjs = __webpack_require__(245);
 
 var _fingerprintjs2 = _interopRequireDefault(_fingerprintjs);
 
+var _BenchmarkMetrics = __webpack_require__(246);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Time to playback start
@@ -15526,16 +15528,17 @@ var storage_item_playback_delay = "playback_delay_time_";
 var processInfo = '';
 
 // Initializing Player
-//let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
+// let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
 var url = "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd";
 var player = dashjs.MediaPlayer().create();
 player.initialize(document.querySelector('#dashPlayer'), url, false);
+var playerStarted = Date.now();
 player.getDebug().setLogToBrowserConsole(false);
 
 // Adding Button to the player
 
 
-startingTime = Date.now();
+var startingTime = Date.now();
 
 //initialising local web storage
 
@@ -15572,12 +15575,19 @@ divSendData.appendChild(btnSendData);
 
 elementTag[0].parentNode.insertBefore(divSendData, elementTag[0]);
 
-var startingTime = Date.now();
+var delays = new Array(TEST_COUNT);
+var delaysCollection = new Array();
+var delayObj = new _BenchmarkMetrics.BenchmarkMetrics();
 
 function playback_restart() {
     // for restarting the stream
     player.seek(0);
+
     startingTime = Date.now();
+    delaysCollection.push(delayObj);
+    console.log(JSON.stringify(delaysCollection));
+
+    delayObj = new _BenchmarkMetrics.BenchmarkMetrics();
     player.play();
 }
 
@@ -15592,14 +15602,15 @@ for (var i = 0; i < buttonsSendData.length; i++) {
     buttonsSendData[i].addEventListener('click', send_data, false);
 }
 
-var delays = new Array(TEST_COUNT);
 for (i = 0; i < TEST_COUNT; i++) {
     delays[i] = new Array(METRICES_COUNT);
-}console.log("setting here");
+}
+
+console.log("setting here");
 if (delays[0]) {
     delays[0][0] = Date.now();
 }
-
+var manifestLoadTime = 0;
 player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
 
     // var jsId = document.cookie.match(/JSESSIONID=[^;]+/);
@@ -15608,7 +15619,11 @@ player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
     console.log("Manifest loaded");
     console.log(JSON.stringify(delays));
     // delays[tag][1] = delays[tag][0]-startingTime;
-    delays[tag][1] = Date.now();
+
+    // delays[tag][1] = Date.now();
+
+    delayObj.manifestLoad = startingTime - Date.now();
+    manifestLoadTime = Date.now();
 
     //storage_item_menifest_load=storage_item_menifest_load+tag;
     //myStorage.setItem(storage_item_menifest_load,(Date.now()-startingTime));
@@ -15625,7 +15640,9 @@ player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
 player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
 
     console.log("Stream initialized");
-    delays[tag][2] = Date.now();
+    // delays[tag][2] = Date.now();
+
+    delayObj.streamInitialised = Date.now() - manifestLoadTime;
 
     // delays[tag].push(Date.now());
     // delays["streamInitialization"].push(Date.now());
@@ -15636,29 +15653,29 @@ player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
 
 player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, function (e) {
     console.log("Playback started");
-    delays[tag][3] = Date.now();
+    // delays[tag][3] = Date.now();
+
+    delayObj.playbackStartDelay = Date.now() - manifestLoadTime;
+
     //console.log(Date.now());
     console.log("Memory performance");
     console.log(window.performance.memory);
 
-    // storage_item_playback_delay = storage_item_playback_delay + tag;
-    // myStorage.setItem(storage_item_playback_delay, (Date.now() - startingTime));
-    // storage_item_playback_delay = "playback_delay_time_";
-    // myStorage.setItem("TEST_COUNT", tag);
-
-    // delays["playbackStarted"].push(Date.now());
-    // delays[tag].push(Date.now());
     console.log("stream info");
     console.log(player.getActiveStream().getStreamInfo());
     // updateMetrics("video", player);
 });
 
+var timeStart = 0;
+var timeStartSeeking = 0;
 player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_REQUESTED, function (e) {
     // delays["qualityChangeRequested"].push(Date.now());
     // delays[tag].push(Date.now());
 
     // console.log(Date.now());
     delays[tag][4] = Date.now();
+
+    timeStart = Date.now();
 
     console.log("Memory performance");
     console.log(window.performance.memory);
@@ -15671,6 +15688,8 @@ player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_RENDERED, function (e) {
     // delays["qualityChangeRendered"].push(Date.now());
     // delays[tag].push(Date.now());
     delays[tag][5] = Date.now();
+
+    delayObj.qualityChangeDelay = Date.now() - timeStart;
 
     // console.log(Date.now());
     console.log("Memory performance");
@@ -15685,6 +15704,7 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_SEEKING, function (e) {
     // delays[tag].push(Date.now());
     delays[tag][6] = Date.now();
 
+    timeStartSeeking = Date.now();
     // console.log(Date.now());
     console.log("Memory performance");
     console.log(window.performance.memory);
@@ -15697,13 +15717,7 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_SEEKED, function (e) {
     // delays["qualityChangeRendered"].push(Date.now());
     // delays[tag].push(Date.now());
     delays[tag][7] = Date.now();
-
-    // console.log(Date.now());
-    // console.log("Memory performance");
-    // console.log(window.performance.memory);
-    // console.log("Quality change rendered");
-    // updateMetrics("video", player);
-    // console.log(processInfo);
+    delayObj.playbackSeekingDelay = Date.now() - timeStartSeeking;
 });
 
 player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
@@ -15727,7 +15741,7 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
         player.seek(0);
         player.pause();
         alert("Benchmark completed");
-        console.log(JSON.stringify(delays));
+        // console.log(JSON.stringify(delays));
         tag = 0;
         send_data();
     }
@@ -15745,11 +15759,14 @@ function updateMetrics(type, player) {
     // var periodIdx = $scope.streamInfo.index;
     var repSwitch = dashMetrics.getCurrentRepresentationSwitch(metrics);
     var bufferLevel = dashMetrics.getCurrentBufferLevel(metrics);
+
+    delayObj.bufferLevel.push(bufferLevel);
+
     // var maxIndex = dashMetrics.getMaxIndexForBufferType(type, periodIdx);
     var index = player.getQualityFor(type);
     // var bitrate = repSwitch ? Math.round(dashMetrics.getBandwidthForRepresentation(repSwitch.to, periodIdx) / 1000) : NaN;
     var droppedFPS = dashMetrics.getCurrentDroppedFrames(metrics) ? dashMetrics.getCurrentDroppedFrames(metrics).droppedFrames : 0;
-
+    delayObj.droppedFrames = droppedFPS;
     console.log("metrices");
     console.log("Get current track for video");
     console.log(player.getCurrentTrackFor(type));
@@ -15757,31 +15774,34 @@ function updateMetrics(type, player) {
     console.log(player.getQualityFor(type));
     console.log("Get playback rate: ");
     console.log(player.getPlaybackRate());
+    delayObj.playbackRate = player.getPlaybackRate();
+
     console.log("Rep Switch : ");
     console.log(repSwitch);
     console.log("Current Dropped Frames:");
     console.log(dashMetrics.getCurrentDroppedFrames(metrics));
     console.log("Buffer stable time:");
     console.log(player.getStableBufferTime());
+    delayObj.bufferStableTime = player.getStableBufferTime();
     console.log("Buffer level" + bufferLevel + " Index " + index + " DroppedFrames" + droppedFPS);
 }
 
 function send_data() {
 
     //console.log(" Menifest Delays: ");
-    console.log(JSON.stringify(delays));
+    // console.log(JSON.stringify(delays));
     var playback_delay_time = "playback_delay_time_";
 
-    for (var i = 0, len = myStorage.length; i < len; i++) {
-
-        var key = myStorage.key(i);
-        var value = myStorage[key];
-        console.log("Mystorage Val :" + key + " => " + value);
-        //console.log(playback_delay_time);
-    }
+    // for (var i = 0, len = myStorage.length; i < len; i++) {
+    //
+    //     var key = myStorage.key(i);
+    //     var value = myStorage[key];
+    //     console.log("Mystorage Val :" + key + " => " + value);
+    //     //console.log(playback_delay_time);
+    // }
 
     var browserId;
-
+    //
     var getFingerprint = function getFingerprint() {
         return new Promise(function (resolve) {
             new _fingerprintjs2.default().get(function (result, components) {
@@ -15790,57 +15810,72 @@ function send_data() {
         });
     };
 
-    var main = async function main() {
-        // pseudo-synchronous code
-        var f = await getFingerprint();
-        //btnBenchmark.innerText = f.result
-        console.log("Session ID :" + f.result);
-        browserId = f.result;
-    };
-    setTimeout(main, 0);
-
-    console.log("Final Browser ID :" + browserId);
+    // setTimeout(main, 0);
+    //
+    //
+    // console.log("Final Browser ID :" + browserId);
 
     var t;
     var session_id = new Date().valueOf();
 
     console.log("Final Session ID :" + session_id);
 
-    for (var test = 1, t = myStorage.getItem("TEST_COUNT"); test < t; test++) {
+    // for (var test = 1, t = myStorage.getItem("TEST_COUNT"); test < t; test++) {
 
-        //playback_delay_time = playback_delay_time + i;
-        //console.log("String Before Matched:"+playback_delay_time);
-        playback_delay_time = playback_delay_time + test;
-        var val = myStorage.getItem(playback_delay_time);
+    //playback_delay_time = playback_delay_time + i;
+    //console.log("String Before Matched:"+playback_delay_time);
+    // playback_delay_time = playback_delay_time + test;
+    // var val = myStorage.getItem(playback_delay_time);
+    //
+    // console.log(":" + playback_delay_time);
 
-        console.log(":" + playback_delay_time);
+    // var http = new XMLHttpRequest();
+    //
+    // //console.log("String Matched:"+playback_delay_time);
+    // var url = "http://localhost:3002/playback_delay";
+    // // var params = "client_id= " + browserId + " & session_id=" + session_id + "&unit_id=33&value=" + val;
+    // http.open("POST", url, true);
+    // // console.log("param:" + params);
+    // //Send the proper header information along with the request
+    // http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    // // http.setRequestHeader("Content-length", params.length);
+    // http.setRequestHeader("Connection", "close");
+    //
+    // http.onreadystatechange = function () {//Call a function when the state changes.
+    //     if (http.readyState == 4 && http.status == 200) {
+    //         alert(http.responseText);
+    //     }
+    // }
 
-        var http = new XMLHttpRequest();
 
-        //console.log("String Matched:"+playback_delay_time);
-        var url = "http://localhost:3002/playback_delay";
-        var params = "client_id= " + browserId + " & session_id=" + session_id + "&unit_id=33&value=" + val;
-        http.open("POST", url, true);
-        console.log("param:" + params);
-        //Send the proper header information along with the request
-        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        http.setRequestHeader("Content-length", params.length);
-        http.setRequestHeader("Connection", "close");
+    // const main = async() => {
+    // pseudo-synchronous code
+    // const f = await getFingerprint()
+    //btnBenchmark.innerText = f.result
 
-        http.onreadystatechange = function () {
-            //Call a function when the state changes.
-            if (http.readyState == 4 && http.status == 200) {
-                alert(http.responseText);
-            }
-        };
-        http.send(params);
+    new _fingerprintjs2.default().get(function (result, components) {
 
-        playback_delay_time = "playback_delay_time_";
-    }
+        console.log(result); //a hash, representing your device fingerprint
+        console.log(components); // an array of FP components
+
+
+        // console.log("Browser ID :" + f.result);
+        browserId = result;
+        delaysCollection.push(browserId);
+
+        console.log(JSON.stringify(delaysCollection));
+    });
+
+    // http.send(JSON.stringify(delaysCollection));
+
+    // }
+
+
+    // }
 
     //localStorage.getItem("bar");
 
-    myStorage.clear();
+    // myStorage.clear();
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -35591,6 +35626,33 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;
           o = this.x64Xor(o, [0, e.charCodeAt(u)]), o = this.x64Multiply(o, l), o = this.x64Rotl(o, 31), o = this.x64Multiply(o, h), r = this.x64Xor(r, o);}return r = this.x64Xor(r, [0, e.length]), n = this.x64Xor(n, [0, e.length]), r = this.x64Add(r, n), n = this.x64Add(n, r), r = this.x64Fmix(r), n = this.x64Fmix(n), r = this.x64Add(r, n), n = this.x64Add(n, r), ("00000000" + (r[0] >>> 0).toString(16)).slice(-8) + ("00000000" + (r[1] >>> 0).toString(16)).slice(-8) + ("00000000" + (n[0] >>> 0).toString(16)).slice(-8) + ("00000000" + (n[1] >>> 0).toString(16)).slice(-8);
     } }, e.VERSION = "1.5.1", e;
 });
+
+/***/ }),
+/* 246 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var BenchmarkMetrics = exports.BenchmarkMetrics = function BenchmarkMetrics() {
+    _classCallCheck(this, BenchmarkMetrics);
+
+    this.manifestLoad = 0;
+    this.streamInitialised = 0;
+    this.playbackStartDelay = 0;
+    this.qualityChangeDelay = 0;
+    this.playbackSeekingDelay = 0;
+    this.playbackRate = 0;
+    this.bufferStableTime = 0;
+    this.droppedFrames = 0;
+    this.bufferLevel = new Array();
+};
 
 /***/ })
 /******/ ]);
