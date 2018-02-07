@@ -1,4 +1,8 @@
 import {MediaPlayer, Debug} from 'dashjs';
+import promise from 'promise';
+import Fingerprint2 from 'fingerprintjs2';
+
+
 
 
 // Time to playback start
@@ -33,6 +37,10 @@ let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
 //let url =   "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd" ;
 let player = dashjs.MediaPlayer().create();
 player.initialize(document.querySelector('#dashPlayer'), url, false);
+
+
+
+
 
 startingTime = Date.now();
 
@@ -307,19 +315,43 @@ function send_data(){
         console.log("Mystorage Val :"+key + " => " + value);
         //console.log(playback_delay_time);
      }   
+
+      var browserId ;
+
+        const getFingerprint = () => new Promise(resolve => {
+              (new Fingerprint2()).get((result, components) => resolve({result, components}) )
+            })
+
+            const main = async () => {
+              // pseudo-synchronous code
+              const f = await getFingerprint()
+              //btnBenchmark.innerText = f.result
+              console.log("Session ID :" + f.result);
+              browserId = f.result
+              
+            }
+         setTimeout(main, 0);
+
+
+         console.log("Final Browser ID :" + browserId);
        
         var t;
+        var session_id = new Date().valueOf();
+        
+        console.log("Final Session ID :" + session_id);
+
         for(var test=1, t=myStorage.getItem("TEST_COUNT"); test<t; test++){ 
         //playback_delay_time = playback_delay_time + i;
         //console.log("String Before Matched:"+playback_delay_time);
         playback_delay_time=playback_delay_time + test;
         var val = myStorage.getItem(playback_delay_time);
         console.log(":"+playback_delay_time);      
+                
                 var http = new XMLHttpRequest();
                  
                  //console.log("String Matched:"+playback_delay_time);
                 var url = "http://localhost:3002/playback_delay";
-                var params = "client_id=1&session_id=" +  test + "&unit_id=33&value="+ val;
+                var params = "client_id= " + browserId + " & session_id=" +  session_id + "&unit_id=33&value="+ val;
                 http.open("POST", url, true);
         console.log("param:"+ params); 
                 //Send the proper header information along with the request
