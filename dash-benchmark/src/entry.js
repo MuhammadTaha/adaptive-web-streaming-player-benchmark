@@ -1,4 +1,6 @@
 import {MediaPlayer, Debug} from 'dashjs';
+import promise from 'promise';
+import Fingerprint2 from 'fingerprintjs2';
 
 
 // Time to playback start
@@ -29,31 +31,38 @@ let storage_item_playback_delay = "playback_delay_time_";
 let processInfo = '';
 
 
-
 // Initializing Player
 //let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
-let url =   "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd" ;
+let url = "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd";
 let player = dashjs.MediaPlayer().create();
 player.initialize(document.querySelector('#dashPlayer'), url, false);
 player.getDebug().setLogToBrowserConsole(false);
 
 // Adding Button to the player
+
+
+startingTime = Date.now();
+
+//initialising local web storage
+
+
+// Adding Benchmark Button to the player
 let elementTag = document.getElementsByTagName("video");
 
 //auto loop option to the stream
-elementTag[0].setAttribute("loop",false);
+elementTag[0].setAttribute("loop", false);
 
 let divBench = document.createElement("div");
 
 let btnBench = document.createElement("button");
-btnBench.type="button";
-btnBench.innerHTML="Start Benchmarking";
+btnBench.type = "button";
+btnBench.innerHTML = "Start Benchmarking";
 btnBench.className = "btnBenchmark";
-btnBench.name= "btnBenchmark";//auto loop option to the stream
+btnBench.name = "btnBenchmark";//auto loop option to the stream
 
-divBench.appendChild(btnBench) ;
+divBench.appendChild(btnBench);
 
-elementTag[0].parentNode.insertBefore(divBench,elementTag[0]);
+elementTag[0].parentNode.insertBefore(divBench, elementTag[0]);
 
 
 // Send Data Button.
@@ -68,11 +77,11 @@ btnSendData.name = "btnSendDataBenchmark";//auto loop option to the stream
 
 divSendData.appendChild(btnSendData);
 
-elementTag[0].parentNode.insertBefore(divSendData,elementTag[0]);
+elementTag[0].parentNode.insertBefore(divSendData, elementTag[0]);
 
 let startingTime = Date.now();
 
-function playback_restart(){
+function playback_restart() {
     // for restarting the stream
     player.seek(0);
     startingTime = Date.now();
@@ -91,14 +100,14 @@ for (var i = 0; i < buttonsSendData.length; i++) {
 }
 
 
-let delays=new Array(TEST_COUNT)
-for (i=0; i< TEST_COUNT; i++)
-    delays[i]=new Array(METRICES_COUNT)
+let delays = new Array(TEST_COUNT)
+for (i = 0; i < TEST_COUNT; i++)
+    delays[i] = new Array(METRICES_COUNT)
 
 
 console.log("setting here");
-if(delays[0]){
-    delays[0][0]= Date.now();
+if (delays[0]) {
+    delays[0][0] = Date.now();
 }
 
 player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
@@ -221,15 +230,15 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
 
     // delays[tag].push(Date.now());
 
-     console.log("TEST COUNT:" + tag);
+    console.log("TEST COUNT:" + tag);
 
     // updateMetrics("video", player);
 
-    if (tag < TEST_COUNT-1) {
+    if (tag < TEST_COUNT - 1) {
         console.log(JSON.stringify(delays));
         tag = tag + 1;
         console.log(tag);
-        delays[tag][0]= Date.now();
+        delays[tag][0] = Date.now();
         playback_restart();
     } else {
         player.seek(0);
@@ -237,10 +246,9 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
         alert("Benchmark completed");
         console.log(JSON.stringify(delays));
         tag = 0;
+        send_data();
     }
 });
-
-
 
 
 function updateMetrics(type, player) {
@@ -291,20 +299,48 @@ function send_data() {
         var value = myStorage[key];
         console.log("Mystorage Val :" + key + " => " + value);
         //console.log(playback_delay_time);
+
     }
 
+
+    var browserId;
+
+    const getFingerprint = () => new Promise(resolve => {
+        (new Fingerprint2()).get((result, components) => resolve({result, components}))
+    })
+
+    const main = async () => {
+        // pseudo-synchronous code
+        const f = await getFingerprint()
+        //btnBenchmark.innerText = f.result
+        console.log("Session ID :" + f.result);
+        browserId = f.result
+
+    }
+    setTimeout(main, 0);
+
+
+    console.log("Final Browser ID :" + browserId);
+
     var t;
+    var session_id = new Date().valueOf();
+
+    console.log("Final Session ID :" + session_id);
+
     for (var test = 1, t = myStorage.getItem("TEST_COUNT"); test < t; test++) {
+
         //playback_delay_time = playback_delay_time + i;
         //console.log("String Before Matched:"+playback_delay_time);
         playback_delay_time = playback_delay_time + test;
         var val = myStorage.getItem(playback_delay_time);
+
         console.log(":" + playback_delay_time);
+
         var http = new XMLHttpRequest();
 
         //console.log("String Matched:"+playback_delay_time);
         var url = "http://localhost:3002/playback_delay";
-        var params = "client_id=1&session_id=" + test + "&unit_id=33&value=" + val;
+        var params = "client_id= " + browserId + " & session_id=" + session_id + "&unit_id=33&value=" + val;
         http.open("POST", url, true);
         console.log("param:" + params);
         //Send the proper header information along with the request
@@ -320,6 +356,7 @@ function send_data() {
         http.send(params);
 
         playback_delay_time = "playback_delay_time_";
+
     }
 
     //localStorage.getItem("bar");
@@ -338,9 +375,7 @@ chrome.runtime.onMessage.addListener(
         sendResponse({farewell: "goodbye"});
 
         // }
-    });
-
-
+});
 
 
 // import {MediaPlayer, Debug} from 'dashjs';
