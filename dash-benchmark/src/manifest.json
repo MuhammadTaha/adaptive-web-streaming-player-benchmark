@@ -1,0 +1,24 @@
+{
+  "name": "dashjs-webpack-sample",
+  "version": "0.5",
+  "permissions": [
+    "tabs",
+    "processes"
+  ],
+  "minimum_chrome_version": "34",
+  "manifest_version": 2,
+  "description": "Show several system information via SystemInfo API",
+  "content_scripts":[{
+    "matches":[
+        "<all_urls>"
+      ],
+    "js":[
+      "out.js"
+    ]
+
+  }],
+
+    "background": {
+      "scripts": ["main.js"]
+    }
+}

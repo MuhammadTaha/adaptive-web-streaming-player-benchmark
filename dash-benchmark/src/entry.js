@@ -27,14 +27,14 @@ let TEST_COUNT = 3;
 let tag = 1;
 let startingTime = 0;
 let myStorage = window.localStorage;
-let storage_item_menifest_load="menifest_load_time_";
+let storage_item_menifest_load="manifest_load_time_";
 let storage_item_playback_delay="playback_delay_time_";
-
+let processInfo = '';
 
 
 // Initializing Player
 let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
-//let url =   "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd" ;
+// let url =   "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd" ;
 let player = dashjs.MediaPlayer().create();
 player.initialize(document.querySelector('#dashPlayer'), url, false);
 
@@ -47,7 +47,7 @@ startingTime = Date.now();
 //initialising local web storage
 
 
-// Adding Button to the player
+// Adding Benchmark Button to the player
 let elementTag = document.getElementsByTagName("video");
 
 let divBench = document.createElement("div");
@@ -58,7 +58,11 @@ btnBench.innerHTML="Start Benchmarking";
 btnBench.className = "btnBenchmark";
 btnBench.name= "btnBenchmark";//auto loop option to the stream
 
+btnBench.setAttribute("onclick","playback_restart()");
+divBench.appendChild(btnBench) ;
 
+
+// Send Data Button.
 let divSendData = document.createElement("div");
 
 let btnSendData = document.createElement("button");
@@ -70,23 +74,9 @@ btnSendData.name= "btnSendDataBenchmark";//auto loop option to the stream
 
 //auto loop option to the stream
 elementTag[0].setAttribute("loop",true);
-console.log(elementTag);
-// elementTag[0].setAttribute("loop",true);"btnBenchmark";
-btnBench.setAttribute("onclick","playback_restart()");
-divBench.appendChild(btnBench) ;
 
-
-//elementTag[1].setAttribute("loop1",true);
 btnSendData.setAttribute("onclick","send_data()");
 divSendData.appendChild(btnSendData) ;
-
-
-let btnBenchmark = document.createElement("button");
-btnBenchmark.innerText= "Start Benchmarking";
-elementTag[0].parentNode.insertBefore(divBench,elementTag[0]);
-
-let buttonsBenchmark = document.getElementsByClassName("btnBenchmark");
- console.log(buttonsBenchmark);
 
  function playback_restart(){
      // for restarting the stream
@@ -101,41 +91,26 @@ for (var i = 0; i < buttonsBenchmark.length; i++) {
 }
 console.log(player.getLiveDelay());
 
-// Send Data Button......
-
-
-
-let btnsendAPIdata = document.createElement("button");
-btnsendAPIdata.innerText= "Send Data";
-elementTag[0].parentNode.insertBefore(divSendData,elementTag[0]);
-
-let buttonsSendData = document.getElementsByClassName("btnSendDataBenchmark");
-console.log(buttonsSendData);
-
 
 for (var i = 0; i < buttonsSendData.length; i++) {
-    buttonsSendData[i].addEventListener('click', send_data, false);
+    buttonsSendData[i].addEventListener('click', send_data(), false);
 
 }
 
+// let el_body = document.getElementsByTagName('body')
+// var event = new Event(chrome.tabs.onActivated);  // (*)
+// el_body.dispatchEvent(event);
+// HTMLElement el_body = document.getElementsByTagName('body');
 
-
-
-
-// console.log("matewete");
-// player.on("click", function (e) {
-//     alert("player clicked");
-// });
-
-
-// let systemInfo = chrome.system;
-
-// player.getMetricsFor(type)
-// updateMetrics("video",player);
 
 let delays = [];
-delays["manifestDelay"]=[];
-delays["streamInitializationDelay"]=[];
+delays["manifestLoaded"]=[];
+delays["streamInitialization"]=[];
+delays["playbackStarted"]=[];
+delays["playbackEnded"]=[];
+delays["qualityChangeRequested"]=[];
+delays["qualityChangeRendered"]=[];
+delays["qualityChangeRendered"]=[];
 
 
 player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
@@ -150,7 +125,7 @@ player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
     //myStorage.setItem(storage_item_menifest_load,(Date.now()-startingTime));
     //storage_item_menifest_load="menifest_load_time_";
    
-    delays["manifestDelay"].push(Date.now()-startingTime);
+    delays["manifestLoaded"].push(Date.now()-startingTime);
     console.log(delays);
 
     console.log("Memory performance");
@@ -163,7 +138,7 @@ player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
     console.log("Stream initialized");
     //console.log(Date.now());
 
-    //delays["streamInitializationDelay"].push();
+    delays["streamInitialization"].push(Date.now());
 
 
 
@@ -172,16 +147,6 @@ player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
 
 });
 
-/*
-player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
-
-
-    console.log("Stream initialized");
-    console.log(Date.now());
-    updateMetrics("video", player);
-});
-
-*/
 
 
 player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, function (e) {
@@ -190,42 +155,21 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, function (e) {
     console.log("Memory performance");
     console.log(window.performance.memory);
 
-
-
        storage_item_playback_delay=storage_item_playback_delay+tag;
        myStorage.setItem(storage_item_playback_delay,(Date.now()-startingTime));
        storage_item_playback_delay="playback_delay_time_";
        myStorage.setItem("TEST_COUNT",tag);
 
-
+    delays["playbackStarted"].push(Date.now());
     console.log("stream info");
     console.log(player.getActiveStream().getStreamInfo());
     // updateMetrics("video", player);
 });
-player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
-    console.log("Playback ended");
-    console.log(Date.now());
-    
-    console.log("TEST_COUNT:" + TEST_COUNT);
-
-    // updateMetrics("video", player);
-
-    if (TEST_COUNT > 0){
-   
-    tag=tag+1;
-    TEST_COUNT=TEST_COUNT-1;
-    player.seek(0);
-    player.play();
-    }
-    else {
-        player.seek(0);
-        
-    }
-
-});
 
 
 player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_REQUESTED, function (e) {
+    delays["qualityChangeRequested"].push(Date.now());
+
     console.log(Date.now());
     console.log("Memory performance");
     console.log(window.performance.memory);
@@ -237,41 +181,37 @@ player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_REQUESTED, function (e) {
 
 
 player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_RENDERED, function (e) {
+    delays["qualityChangeRendered"].push(Date.now());
+
     console.log(Date.now());
     console.log("Memory performance");
     console.log(window.performance.memory);
     console.log("Quality change rendered");
     updateMetrics("video", player);
-    console.log(processInfo);
-
-
+    // console.log(processInfo);
 });
 
+player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
+    console.log("Playback ended");
+    console.log(Date.now());
+    delays["playbackEnded"].push(Date.now());
 
-// player.on(dashjs.MediaPlayer.events.Qua, function (e) {
-//     console.log(Date.now());
-//     console.log("Quality change rendered");
-//     updateMetrics("video", player);
-//
-// });
+    console.log("TEST_COUNT:" + TEST_COUNT);
 
+    // updateMetrics("video", player);
 
-// player.on(dashjs.MediaPlayer.events.S, function (e) {
-//     console.log("Quality change rendered");
-//     updateMetrics("video",player);
-// });
-// while(true) {
-//     console.log(player.getInitialBitrateFor());
-// console.log(player.getBandwidthForRepresentation('video'));
-// console.log(player.getDashMetrics());
-//
-// console.log(player.getQualityFor("video"));
-// console.log(player.getMetricsFor("video"));
-// console.log(player.getMetricsFor("audio"));
-//
-// console.log(player.getStableBufferTime());
-// console.log("here");
-// console.log(player.getBufferLength());
+    if (TEST_COUNT > 0){
+        console.log(TEST_COUNT );
+        tag=tag+1;
+        TEST_COUNT=TEST_COUNT-1;
+        player.seek(0);
+        player.play();
+    }
+    else {
+        player.seek(0);
+
+    }
+});
 
 
 function updateMetrics(type, player) {
@@ -371,15 +311,23 @@ function send_data(){
         }
          
           
-         //localStorage.getItem("bar");  
-
-
-       
-
+         //localStorage.getItem("bar");
     
     myStorage.clear();
-}   
+}
 
 
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        console.log("receive message");
+        console.log(request.processInfo);
+        // if (request.processInfo) {
+            this.processInfo = request.processInfo;
+            console.log('send goodbye');
+            sendResponse({farewell: "goodbye"});
+
+
+        // }
+});
 
 

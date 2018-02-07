@@ -16,7 +16,7 @@ module.exports = {
         new CopyWebpackPlugin([
                 // {output}/file.txt
             { from: 'src/main.js', to: 'main.js' },
-            { from: 'src/content.js', to: 'content.js' },
+            // { from: 'src/content.js', to: 'content.js' },
             { from: 'src/manifest.json', to: 'manifest.json' },
 
         ])
