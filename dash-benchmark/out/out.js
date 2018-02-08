@@ -15528,8 +15528,8 @@ var storage_item_playback_delay = "playback_delay_time_";
 var processInfo = '';
 
 // Initializing Player
-var url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
-// let url = "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd";
+// let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
+var url = "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd";
 var player = dashjs.MediaPlayer().create();
 player.initialize(document.querySelector('#dashPlayer'), url, false);
 var playerStarted = Date.now();
@@ -15640,7 +15640,7 @@ player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
 player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
 
     console.log("Stream initialized");
-    delays[tag][2] = Date.now();
+    // delays[tag][2] = Date.now();
 
     delayObj.streamInitialised = Date.now() - manifestLoadTime;
 
@@ -15653,7 +15653,7 @@ player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
 
 player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, function (e) {
     console.log("Playback started");
-    delays[tag][3] = Date.now();
+    // delays[tag][3] = Date.now();
 
     delayObj.playbackStartDelay = Date.now() - manifestLoadTime;
 
@@ -15661,13 +15661,6 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, function (e) {
     console.log("Memory performance");
     console.log(window.performance.memory);
 
-    // storage_item_playback_delay = storage_item_playback_delay + tag;
-    // myStorage.setItem(storage_item_playback_delay, (Date.now() - startingTime));
-    // storage_item_playback_delay = "playback_delay_time_";
-    // myStorage.setItem("TEST_COUNT", tag);
-
-    // delays["playbackStarted"].push(Date.now());
-    // delays[tag].push(Date.now());
     console.log("stream info");
     console.log(player.getActiveStream().getStreamInfo());
     // updateMetrics("video", player);
@@ -15748,7 +15741,7 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
         player.seek(0);
         player.pause();
         alert("Benchmark completed");
-        console.log(JSON.stringify(delays));
+        // console.log(JSON.stringify(delays));
         tag = 0;
         send_data();
     }
@@ -15796,19 +15789,19 @@ function updateMetrics(type, player) {
 function send_data() {
 
     //console.log(" Menifest Delays: ");
-    console.log(JSON.stringify(delays));
+    // console.log(JSON.stringify(delays));
     var playback_delay_time = "playback_delay_time_";
 
-    for (var i = 0, len = myStorage.length; i < len; i++) {
-
-        var key = myStorage.key(i);
-        var value = myStorage[key];
-        console.log("Mystorage Val :" + key + " => " + value);
-        //console.log(playback_delay_time);
-    }
+    // for (var i = 0, len = myStorage.length; i < len; i++) {
+    //
+    //     var key = myStorage.key(i);
+    //     var value = myStorage[key];
+    //     console.log("Mystorage Val :" + key + " => " + value);
+    //     //console.log(playback_delay_time);
+    // }
 
     var browserId;
-
+    //
     var getFingerprint = function getFingerprint() {
         return new Promise(function (resolve) {
             new _fingerprintjs2.default().get(function (result, components) {
@@ -15817,57 +15810,72 @@ function send_data() {
         });
     };
 
-    var main = async function main() {
-        // pseudo-synchronous code
-        var f = await getFingerprint();
-        //btnBenchmark.innerText = f.result
-        console.log("Session ID :" + f.result);
-        browserId = f.result;
-    };
-    setTimeout(main, 0);
-
-    console.log("Final Browser ID :" + browserId);
+    // setTimeout(main, 0);
+    //
+    //
+    // console.log("Final Browser ID :" + browserId);
 
     var t;
     var session_id = new Date().valueOf();
 
     console.log("Final Session ID :" + session_id);
 
-    for (var test = 1, t = myStorage.getItem("TEST_COUNT"); test < t; test++) {
+    // for (var test = 1, t = myStorage.getItem("TEST_COUNT"); test < t; test++) {
 
-        //playback_delay_time = playback_delay_time + i;
-        //console.log("String Before Matched:"+playback_delay_time);
-        playback_delay_time = playback_delay_time + test;
-        var val = myStorage.getItem(playback_delay_time);
+    //playback_delay_time = playback_delay_time + i;
+    //console.log("String Before Matched:"+playback_delay_time);
+    // playback_delay_time = playback_delay_time + test;
+    // var val = myStorage.getItem(playback_delay_time);
+    //
+    // console.log(":" + playback_delay_time);
 
-        console.log(":" + playback_delay_time);
+    // var http = new XMLHttpRequest();
+    //
+    // //console.log("String Matched:"+playback_delay_time);
+    // var url = "http://localhost:3002/playback_delay";
+    // // var params = "client_id= " + browserId + " & session_id=" + session_id + "&unit_id=33&value=" + val;
+    // http.open("POST", url, true);
+    // // console.log("param:" + params);
+    // //Send the proper header information along with the request
+    // http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    // // http.setRequestHeader("Content-length", params.length);
+    // http.setRequestHeader("Connection", "close");
+    //
+    // http.onreadystatechange = function () {//Call a function when the state changes.
+    //     if (http.readyState == 4 && http.status == 200) {
+    //         alert(http.responseText);
+    //     }
+    // }
 
-        var http = new XMLHttpRequest();
 
-        //console.log("String Matched:"+playback_delay_time);
-        var url = "http://localhost:3002/playback_delay";
-        var params = "client_id= " + browserId + " & session_id=" + session_id + "&unit_id=33&value=" + val;
-        http.open("POST", url, true);
-        console.log("param:" + params);
-        //Send the proper header information along with the request
-        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        http.setRequestHeader("Content-length", params.length);
-        http.setRequestHeader("Connection", "close");
+    // const main = async() => {
+    // pseudo-synchronous code
+    // const f = await getFingerprint()
+    //btnBenchmark.innerText = f.result
 
-        http.onreadystatechange = function () {
-            //Call a function when the state changes.
-            if (http.readyState == 4 && http.status == 200) {
-                alert(http.responseText);
-            }
-        };
-        http.send(params);
+    new _fingerprintjs2.default().get(function (result, components) {
 
-        playback_delay_time = "playback_delay_time_";
-    }
+        console.log(result); //a hash, representing your device fingerprint
+        console.log(components); // an array of FP components
+
+
+        // console.log("Browser ID :" + f.result);
+        browserId = result;
+        delaysCollection.push(browserId);
+
+        console.log(JSON.stringify(delaysCollection));
+    });
+
+    // http.send(JSON.stringify(delaysCollection));
+
+    // }
+
+
+    // }
 
     //localStorage.getItem("bar");
 
-    myStorage.clear();
+    // myStorage.clear();
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
