@@ -12,3 +12,20 @@ export class BenchmarkMetrics {
 
     }
 }
+
+
+export class BrowserDetails{
+
+    constructor(){
+        this.browserId = 0;
+    }
+
+    static setBrowserId (value){
+        this.browserid = value;
+    }
+
+    static getBrowserId() {
+        return this.browserid;
+
+    }
+}

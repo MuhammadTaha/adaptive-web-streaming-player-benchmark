@@ -1,7 +1,7 @@
 import {MediaPlayer, Debug} from 'dashjs';
 import promise from 'promise';
 import Fingerprint2 from 'fingerprintjs2';
-import {BenchmarkMetrics} from "./BenchmarkMetrics";
+import {BenchmarkMetrics,BrowserDetails} from "./BenchmarkMetrics";
 
 // Time to playback start
 // Manifest parsing time
@@ -84,6 +84,9 @@ elementTag[0].parentNode.insertBefore(divSendData, elementTag[0]);
 
 let delays = new Array(TEST_COUNT)
 let delaysCollection = new Array();
+
+delaysCollection.push({"browserId" : BrowserDetails.getBrowserId()});
+
 let delayObj = new BenchmarkMetrics();
 
 
@@ -323,11 +326,11 @@ function send_data() {
     //     //console.log(playback_delay_time);
     // }
 
-    var browserId;
+
     //
     const getFingerprint = () => new Promise(resolve => {
         (new Fingerprint2()).get((result, components) => resolve({result, components}))
-    })
+    });
 
 
     // setTimeout(main, 0);
@@ -367,29 +370,26 @@ function send_data() {
             }
         }
 
-
-
-
     // const main = async() => {
         // pseudo-synchronous code
         // const f = await getFingerprint()
         //btnBenchmark.innerText = f.result
 
-    new Fingerprint2().get(function(result, components){
+    new Fingerprint2().get(function(browserId, components){
 
-        console.log(result); //a hash, representing your device fingerprint
+        console.log(browserId); //a hash, representing your device fingerprint
         console.log(components); // an array of FP components
 
-
         // console.log("Browser ID :" + f.result);
-        browserId = result
-        delaysCollection.push(browserId);
+        BrowserDetails.setBrowserId(browserId);
+
+        delaysCollection[0] = {"browserId" : BrowserDetails.getBrowserId()}
+
+        // delaysCollection.push({"browserId" : BrowserDetails.getBrowserId()});
 
         console.log(JSON.stringify(delaysCollection));
 
     });
-
-
 
         // http.send(JSON.stringify(delaysCollection));
 

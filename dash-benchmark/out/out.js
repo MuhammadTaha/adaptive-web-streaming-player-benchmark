@@ -15577,6 +15577,9 @@ elementTag[0].parentNode.insertBefore(divSendData, elementTag[0]);
 
 var delays = new Array(TEST_COUNT);
 var delaysCollection = new Array();
+
+delaysCollection.push({ "browserId": _BenchmarkMetrics.BrowserDetails.getBrowserId() });
+
 var delayObj = new _BenchmarkMetrics.BenchmarkMetrics();
 
 function playback_restart() {
@@ -15800,7 +15803,7 @@ function send_data() {
     //     //console.log(playback_delay_time);
     // }
 
-    var browserId;
+
     //
     var getFingerprint = function getFingerprint() {
         return new Promise(function (resolve) {
@@ -15829,41 +15832,43 @@ function send_data() {
     //
     // console.log(":" + playback_delay_time);
 
-    // var http = new XMLHttpRequest();
-    //
-    // //console.log("String Matched:"+playback_delay_time);
-    // var url = "http://localhost:3002/playback_delay";
-    // // var params = "client_id= " + browserId + " & session_id=" + session_id + "&unit_id=33&value=" + val;
-    // http.open("POST", url, true);
-    // // console.log("param:" + params);
-    // //Send the proper header information along with the request
-    // http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    // // http.setRequestHeader("Content-length", params.length);
-    // http.setRequestHeader("Connection", "close");
-    //
-    // http.onreadystatechange = function () {//Call a function when the state changes.
-    //     if (http.readyState == 4 && http.status == 200) {
-    //         alert(http.responseText);
-    //     }
-    // }
+    var http = new XMLHttpRequest();
 
+    //console.log("String Matched:"+playback_delay_time);
+    var url = "http://localhost:3002/playback_delay";
+    // var params = "client_id= " + browserId + " & session_id=" + session_id + "&unit_id=33&value=" + val;
+    http.open("POST", url, true);
+    // console.log("param:" + params);
+    //Send the proper header information along with the request
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    // http.setRequestHeader("Content-length", params.length);
+    http.setRequestHeader("Connection", "close");
+
+    http.onreadystatechange = function () {
+        //Call a function when the state changes.
+        if (http.readyState == 4 && http.status == 200) {
+            alert(http.responseText);
+        }
+    };
 
     // const main = async() => {
     // pseudo-synchronous code
     // const f = await getFingerprint()
     //btnBenchmark.innerText = f.result
 
-    new _fingerprintjs2.default().get(function (result, components) {
+    new _fingerprintjs2.default().get(function (browserId, components) {
 
-        console.log(result); //a hash, representing your device fingerprint
+        console.log(browserId); //a hash, representing your device fingerprint
         console.log(components); // an array of FP components
 
-
         // console.log("Browser ID :" + f.result);
-        browserId = result;
-        delaysCollection.push(browserId);
+        _BenchmarkMetrics.BrowserDetails.setBrowserId(browserId);
 
-        console.log(JSON.stringify(delaysCollection));
+        delaysCollection[0] = { "browserId": _BenchmarkMetrics.BrowserDetails.getBrowserId()
+
+            // delaysCollection.push({"browserId" : BrowserDetails.getBrowserId()});
+
+        };console.log(JSON.stringify(delaysCollection));
     });
 
     // http.send(JSON.stringify(delaysCollection));
@@ -35638,6 +35643,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var BenchmarkMetrics = exports.BenchmarkMetrics = function BenchmarkMetrics() {
@@ -35653,6 +35660,28 @@ var BenchmarkMetrics = exports.BenchmarkMetrics = function BenchmarkMetrics() {
     this.droppedFrames = 0;
     this.bufferLevel = new Array();
 };
+
+var BrowserDetails = exports.BrowserDetails = function () {
+    function BrowserDetails() {
+        _classCallCheck(this, BrowserDetails);
+
+        this.browserId = 0;
+    }
+
+    _createClass(BrowserDetails, null, [{
+        key: "setBrowserId",
+        value: function setBrowserId(value) {
+            this.browserid = value;
+        }
+    }, {
+        key: "getBrowserId",
+        value: function getBrowserId() {
+            return this.browserid;
+        }
+    }]);
+
+    return BrowserDetails;
+}();
 
 /***/ })
 /******/ ]);
