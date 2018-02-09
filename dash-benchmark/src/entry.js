@@ -2,6 +2,21 @@ import {MediaPlayer, Debug} from 'dashjs';
 import promise from 'promise';
 import Fingerprint2 from 'fingerprintjs2';
 import {BenchmarkMetrics,BrowserDetails} from "./BenchmarkMetrics";
+import ProgressBar from 'progressbar.js';
+
+// Assuming we have an empty <div id="container"></div> in
+// HTML
+
+/*
+progressbar css
+* width: 50%;
+    margin-left: 25%;
+    text-align: right;
+*
+* */
+
+
+
 
 // Time to playback start
 // Manifest parsing time
@@ -63,22 +78,69 @@ btnBench.name = "btnBenchmark";//auto loop option to the stream
 
 divBench.appendChild(btnBench);
 
-elementTag[0].parentNode.insertBefore(divBench, elementTag[0]);
-
-
 // Send Data Button.
-let divSendData = document.createElement("div");
-
 let btnSendData = document.createElement("button");
 btnSendData.type = "button";
 btnSendData.innerHTML = "Send Date";
 btnSendData.className = "btnSendDataBenchmark";
 btnSendData.name = "btnSendDataBenchmark";//auto loop option to the stream
 
-
+let divSendData = document.createElement("div");
 divSendData.appendChild(btnSendData);
 
+let divProgressbar = document.createElement("div");
+divProgressbar.id = "progressbar";
+divProgressbar.style.cssText = "width: 50%;margin-left: 25%;text-align: right;";
+
+elementTag[0].parentNode.insertBefore(divBench, elementTag[0]);
 elementTag[0].parentNode.insertBefore(divSendData, elementTag[0]);
+elementTag[0].parentNode.insertBefore(divProgressbar, elementTag[0]);
+
+
+var bar = new ProgressBar.Line("#progressbar", {
+    strokeWidth: 2,
+    easing: 'easeInOut',
+    duration: 1400,
+    color: '#FF8100',
+    trailColor: '#eee',
+    trailWidth: 2,
+    svgStyle: {width: '100%', height: '100%'},
+    text: {
+        style: {
+            // Text color.
+            // Default: same as stroke color (options.color)
+            color: '#999',
+            // position: 'absolute',
+            right: '0',
+            top: '30px',
+            padding: 0,
+            margin: 0,
+            transform: null
+        },
+        autoStyleContainer: false
+    },
+    from: {color: '#FFEA82'},
+    to: {color: '#ED6A5A'},
+    step: (state, bar) => {
+        bar.setText(Math.round(bar.value() * 100) + ' % Completed');
+    }
+});
+
+bar.animate(0.0);  // Number from 0.0 to 1.0
+bar.set(0.0);
+
+function setProgressValue(barObj,totalCycles, currentCycle,currentStage,totalStages){
+
+    let ans = (currentCycle/totalCycles).toFixed(3);
+
+    // let ans = ((currentCycle/totalCycles)*(currentStage/totalStages)).toFixed(3);
+
+    // let ans = (currentCycle/totalCycles).toFixed(2);
+
+    bar = barObj;
+    bar.animate(ans);  // Number from 0.0 to 1.0
+    bar.set(ans);
+}
 
 
 
@@ -125,7 +187,11 @@ if (delays[0]) {
     delays[0][0] = Date.now();
 }
 let manifestLoadTime = 0;
+let stages=8;
+
 player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
+
+    // setProgressValue(bar,TEST_COUNT, tag+1,1,stages);
 
     // var jsId = document.cookie.match(/JSESSIONID=[^;]+/);
     // console.log(document.cookie['io']);
@@ -154,8 +220,7 @@ player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
 player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
 
     console.log("Stream initialized");
-    // delays[tag][2] = Date.now();
-
+    // setProgressValue(bar,TEST_COUNT, tag+1,2,stages);
     delayObj.streamInitialised = Date.now() -manifestLoadTime;
 
     // delays[tag].push(Date.now());
@@ -170,7 +235,7 @@ player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
 player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, function (e) {
     console.log("Playback started");
     // delays[tag][3] = Date.now();
-
+    // setProgressValue(bar,TEST_COUNT, tag+1,3,stages);
     delayObj.playbackStartDelay = Date.now() - manifestLoadTime;
 
     //console.log(Date.now());
@@ -189,6 +254,7 @@ player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_REQUESTED, function (e) {
     // delays[tag].push(Date.now());
 
     // console.log(Date.now());
+    // setProgressValue(bar,TEST_COUNT, tag+1,4,stages);
     delays[tag][4] = Date.now();
 
     timeStart = Date.now();
@@ -209,7 +275,7 @@ player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_RENDERED, function (e) {
     delays[tag][5] = Date.now();
 
     delayObj.qualityChangeDelay = Date.now() - timeStart;
-
+    // setProgressValue(bar,TEST_COUNT, tag+1,5,stages);
     // console.log(Date.now());
     console.log("Memory performance");
     console.log(window.performance.memory);
@@ -222,7 +288,7 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_SEEKING, function (e) {
     // delays["qualityChangeRendered"].push(Date.now());
     // delays[tag].push(Date.now());
     delays[tag][6] = Date.now();
-
+    // setProgressValue(bar,TEST_COUNT, tag+1,6,stages);
     timeStartSeeking =  Date.now();
     // console.log(Date.now());
     console.log("Memory performance");
@@ -235,6 +301,7 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_SEEKING, function (e) {
 player.on(dashjs.MediaPlayer.events.PLAYBACK_SEEKED, function (e) {
     // delays["qualityChangeRendered"].push(Date.now());
     // delays[tag].push(Date.now());
+    // setProgressValue(bar,TEST_COUNT, tag+1,7,stages);
     delays[tag][7] = Date.now();
     delayObj.playbackSeekingDelay = Date.now() - timeStartSeeking;
 
@@ -244,6 +311,7 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_SEEKED, function (e) {
 player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
     console.log("Playback ended");
     // console.log(Date.now());
+    setProgressValue(bar,TEST_COUNT, tag+1,8,stages);
     delays[tag][8] = Date.now();
 
     // delays[tag].push(Date.now());
@@ -253,18 +321,18 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
     // updateMetrics("video", player);
 
     if (tag < TEST_COUNT - 1) {
-        console.log(JSON.stringify(delays));
         tag = tag + 1;
-        console.log(tag);
         delays[tag][0] = Date.now();
         playback_restart();
+
     } else {
         player.seek(0);
         player.pause();
-        alert("Benchmark completed");
-        // console.log(JSON.stringify(delays));
         tag = 0;
+        bar.animate(0.0);  // Number from 0.0 to 1.0
+        bar.set(0.0);
         send_data();
+        alert("Benchmark completed");
     }
 });
 
