@@ -27,7 +27,7 @@ app.set('view engine', 'pug');
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-
+//app.use(bodyParser);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -43,6 +43,13 @@ app.use(cookieParser());
 /*app.get('/reports', function (req, res) {
   res.send('Hello World!')
 });*/
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 var ams_routes = require('./routes/amsRoutes');
 ams_routes(app);

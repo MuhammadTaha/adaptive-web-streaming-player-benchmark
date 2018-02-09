@@ -10,7 +10,7 @@ exports.connection = mysql.createConnection({
 */
 
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('ams-backend', 'root', 'taha@123', {
+const sequelize = new Sequelize('ams-backend', 'root', '123', {
   host: 'localhost',
   dialect: 'mysql',
 

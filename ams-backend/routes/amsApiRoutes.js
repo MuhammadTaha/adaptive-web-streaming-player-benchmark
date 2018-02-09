@@ -9,11 +9,8 @@ module.exports = function (app) {
   
 
     // ams API Routes
-  app.route('/bitrate')
-      .post(ams_con.create_bitrate);
-
-  app.route('/playback_delay')
-      .post(ams_con.create_playback_delay);
+  app.route('/metricvalues')
+  .post(ams_con.create_metric_values);
     
 
 
