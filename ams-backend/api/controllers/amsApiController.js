@@ -58,5 +58,5 @@ exports.create_metric_values = function (req, res) {
     */
 
     //return req.body;
-    res.send("Hello");
+    res.send(request);
 };

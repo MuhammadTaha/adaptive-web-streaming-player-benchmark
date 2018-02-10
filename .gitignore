@@ -11,6 +11,7 @@ RestAPI/node_modules
 ams-backend/node_modules
 */node_modules
 */.idea
+/.idea
 */.vcode
 */package-lock.json
 LibraryImplementation

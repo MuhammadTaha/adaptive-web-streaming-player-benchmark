@@ -6,7 +6,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-  port = process.env.PORT || 3002,
+  port = process.env.PORT || 4022,
 /*var index = require('./routes/index');
 var users = require('./routes/users');*/
 
@@ -61,9 +61,14 @@ routes(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+  // var err = new Error('Not Found');
+  // err.status = 404;
+  // next(err);
+    console.log(req);
+    console.log(res);
+    console.log(next);
+
+
 });
 
 
