@@ -118,8 +118,10 @@ function setProgressValue(barObj,totalCycles, currentCycle,currentStage,totalSta
 
 let delays = new Array(TEST_COUNT)
 let delaysCollection = new Array();
+new Fingerprint2().get(function(browserId, components) {
+    delaysCollection.push({"browserId": browserId});
+});
 
-delaysCollection.push({"browserId" : BrowserDetails.getBrowserId()});
 
 let delayObj = new BenchmarkMetrics();
 
@@ -179,7 +181,7 @@ player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
 
     // delays[tag][1] = Date.now();
 
-    delayObj.manifestLoad = startingTime - Date.now();
+    delayObj.manifestLoad = Date.now() - startingTime;
     manifestLoadTime = Date.now();
 
     console.log("Memory performance");
@@ -190,7 +192,7 @@ player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
 
     console.log("Stream initialized");
     // setProgressValue(bar,TEST_COUNT, tag+1,2,stages);
-    delayObj.streamInitialised = Date.now() -manifestLoadTime;
+    delayObj.streamInitialised = Date.now() - manifestLoadTime;
 
     // delays[tag].push(Date.now());
     // delays["streamInitialization"].push(Date.now());
@@ -384,31 +386,112 @@ function send_data() {
 
         //console.log("String Matched:"+playback_delay_time);
         var url = "http://localhost:4022/metricvalues";
+        // var url = "./ams-backend/api/metricvalues";
         // var params = "client_id= " + browserId + " & session_id=" + session_id + "&unit_id=33&value=" + val;
         http.open("POST", url, true);
         // console.log("param:" + params);
         //Send the proper header information along with the request
         // http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        http.setRequestHeader('Content-type', 'application/json;charset=utf-8');
+        // http.setRequestHeader('Content-type', 'application/json;charset=utf-8');
 
         // http.setRequestHeader("Content-length", params.length);
-        http.setRequestHeader("Connection", "close");
+        // http.setRequestHeader("Connection", "open");
 
-        new Fingerprint2().get(function(browserId, components){
+        // new Fingerprint2().get(function(browserId, components){
+        //
+        // console.log(browserId); //a hash, representing your device fingerprint
+        // console.log(components); // an array of FP components
+        //
+        // // console.log("Browser ID :" + f.result);
+        // BrowserDetails.setBrowserId(browserId);
+        // console.log(browserId);
+        // delaysCollection[0] = {"browserId" : BrowserDetails.getBrowserId()}
 
-        console.log(browserId); //a hash, representing your device fingerprint
-        console.log(components); // an array of FP components
+        // delaysCollection.push({"browserId" : browserId});
 
-        // console.log("Browser ID :" + f.result);
-        BrowserDetails.setBrowserId(browserId);
+        // console.log(JSON.stringify(delaysCollection));
 
-        delaysCollection[0] = {"browserId" : BrowserDetails.getBrowserId()}
+            console.log("reached here in finger");
 
-        // delaysCollection.push({"browserId" : BrowserDetails.getBrowserId()});
+        //     fetch(url, {
+        //         method: 'post',
+        //         cache: 'no-cache',
+        //         // mode: 'no-cors',
+        //         headers: {
+        //             'content-type': 'application/json',
+        //             'accept': 'application/json',
+        //             'origin':'*'
+        //         },
+        //         body: JSON.stringify(delaysCollection)
+        //     }).then(res=>console.log(res))
+        // .catch(error => console.error('Error:', error));
 
-        console.log(JSON.stringify(delaysCollection));
 
-        });
+
+    // var json = {
+    //     json: JSON.stringify({
+    //         a: 1,
+    //         b: 2
+    //     }),
+    //     delay: 3
+    // };
+    //
+    // fetch(url, {
+    //     method: 'post',
+    //     headers: {
+    //         'Accept': 'text/plain',
+    //         'Content-Type': 'text/plain'
+    //     },
+    //     body: JSON.stringify(delaysCollection),//'json=' + encodeURIComponent(JSON.stringify(json.json)) + '&delay=' + json.delay
+    // })
+    //     .then(function (response) {
+    //         return response.json();
+    //     })
+    //     .then(function (result) {
+    //         console.log(result)
+    //         alert(result);
+    //     })
+    //     .catch (function (error) {
+    //         console.log('Request failed', error);
+    //     });
+
+
+//     fetch(url, {
+//             // mode: 'no-cors',
+//             method: 'POST',
+//             headers: {
+//                 // "Access-Control-Allow-Headers":"Content-Type, Accept",
+//                 'Accept': 'text/plain',
+//                 'Content-Type': 'text/plain'
+//             },
+//
+//         body: JSON.stringify(delaysCollection),
+//     }).then(response => {
+//         console.log(response);
+//
+//
+//         if (response.ok) {
+//         response.json().then(json => {
+//             console.log(json);
+//     });
+//     }
+
+
+    // fetch(url, {
+    //     method: 'post',
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify(delaysCollection)
+    // }).then(json).then(res=>res.json())
+    //         .then(res => console.log(res));
+
+
+
+    // });
+
+
+        // });
 
     http.onreadystatechange = function () { //Call a function when the state changes.
         if (http.readyState == 4 && http.status == 200) {
@@ -417,8 +500,16 @@ function send_data() {
         }
     }
 
+
+    // console.log(delaysCollection);
     var data = JSON.stringify(delaysCollection);
+
+    // console.log(data);
+
     http.send(data);
+
+
+
 
 }
 

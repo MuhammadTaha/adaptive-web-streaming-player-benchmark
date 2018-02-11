@@ -4,7 +4,7 @@ var Client = require('../models/Client');
 var MetricValue = require('../models/MetricValue');
 var connection = require('../../db');
 
-
+console.log("in API controller");
 exports.create_bitrate = function (req, res) {
 
   var request = req.body;
@@ -30,11 +30,19 @@ exports.create_bitrate = function (req, res) {
 };
 
 exports.create_metric_values = function (req, res) {
+ // console.log("response function");
 
-  var request = req.body;
-  res.send("Hello");
 
-   console.log(request);    
+   // var request = res.body;
+
+  //   console.log(res);
+  // //
+  //   console.log(req);
+  // //
+  //   res.status(200).send({error:0 , message : "Finished"});
+    res.status(200).send(req.body);
+
+   // console.log(request);
 
    //res.end(request[0]["manifestLoad"].toString());
   // res.status(500).send(request[0]["manifestLoad"].toString());
@@ -57,6 +65,7 @@ exports.create_metric_values = function (req, res) {
 
     */
 
-    //return req.body;
-    res.send(request);
+    // return req.body;
+    // res.send(request);
+    // return;
 };
