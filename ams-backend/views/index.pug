@@ -4,27 +4,171 @@ block content
   h1= title
   p Welcome to Adaptive Media Streaming Reporting System
 
+  p Last Test ID: 
+  p Test Iterations: 
   
-  -var session = [] 
- 
-  each val, i in playback_delays
-      -session.push(val.session_id) 
+
+  p Metric Results: Manifest Delays:
+  table(border='1' width='100%')
+    thead 
+         tr
+            th Iteration Number
+            th Manifest Delay (ms)
+    tbody
+        each value, i in manifest_delay_detail
+            tr
+               td= value.it_num 
+               td= value.val    
+
+
+  
+  #container
+    <canvas id="myChart" width="100%" height="40"></canvas>
+  
+  div
+    p Metric Results: Playback Delays: 
+    
 
   table(border='1' width='100%')
     thead 
          tr
-            th Session ID
-            th Playback Delay
+            th Iteration Number
+            th Playback Delay (ms)
     tbody
-        each val, i in playback_delays
+        each value, i in playback_delay_detail  
             tr
-               td= val.session_id 
-               td= val.value    
+               td= value.it_num 
+               td= value.val 
+
+  #container  
+    <canvas id="myChart1" width="100%" height="50"></canvas>
+
+  div
+    p Metric Results: Dropped Frames: 
+    
+
+  table(border='1' width='100%')
+    thead 
+         tr
+            th Iteration Number
+            th Dropped Frames 
+    tbody
+        each value, i in dropped_frames_detail  
+            tr
+               td= value.it_num 
+               td= value.val 
+
+  #container  
+    <canvas id="droppedFrames" width="100%" height="50"></canvas>  
+
+  div
+    p Metric Results: Stream Initialization Delay: 
+    
+
+  table(border='1' width='100%')
+    thead 
+         tr
+            th Iteration Number
+            th Stream Initialization Delay 
+    tbody
+        each value, i in stream_initialization_delay_detail  
+            tr
+               td= value.it_num 
+               td= value.val 
+
+  #container  
+    <canvas id="streamInitialization" width="100%" height="50"></canvas>   
+
+  div
+    p Metric Results: Quality Change Delay: 
+    
+
+  table(border='1' width='100%')
+    thead 
+         tr
+            th Iteration Number
+            th Quality Change Delay 
+    tbody
+        each value, i in quality_change_delay_details  
+            tr
+               td= value.it_num 
+               td= value.val 
+
+  #container  
+    <canvas id="qualityChangeDelay" width="100%" height="50"></canvas> 
 
 
+  div
+    p Metric Results: Playback Seeking Delay: 
+    
 
-  #container
-    <canvas id="myChart" width="50" height="50"></canvas>
+  table(border='1' width='100%')
+    thead 
+         tr
+            th Iteration Number
+            th Playback Seeking Delay 
+    tbody
+        each value, i in playback_seeking_delay_details  
+            tr
+               td= value.it_num 
+               td= value.val 
+
+  #container  
+    <canvas id="playBackSeekingDelay" width="100%" height="50"></canvas>     
+
+  div
+    p Metric Results: Buffer Stable Time: 
+    
+
+  table(border='1' width='100%')
+    thead 
+         tr
+            th Iteration Number
+            th Buffer Stable Time 
+    tbody
+        each value, i in buffer_stable_time_details  
+            tr
+               td= value.it_num 
+               td= value.val 
+
+  #container  
+    <canvas id="bufferStabletime" width="100%" height="50"></canvas> 
+
+  div
+    p Metric Results: Playback Rate: 
+    
+
+  table(border='1' width='100%')
+    thead 
+         tr
+            th Iteration Number
+            th Playback Rate 
+    tbody
+        each value, i in playback_rate_details  
+            tr
+               td= value.it_num 
+               td= value.val 
+
+  #container  
+    <canvas id="playBackRate" width="100%" height="50"></canvas>   
+
+  div
+    p Metric Results: Buffer Level: 
+    
+
+  table(border='1' width='100%')
+    thead 
+         tr
+            th Iteration Number
+            th Buffer Level 
+    tbody
+        each value, i in buffer_level_avg_details  
+            tr
+               td= value.it_num 
+               td= value.val 
+
+  #container  
+    <canvas id="bufferLevel" width="100%" height="50"></canvas>    
 
 block script
   script.  
@@ -32,10 +176,10 @@ block script
         var myChart = new Chart(ctx, {
           type: 'bar',
           data: {
-              labels: !{session_vals},
+              labels: !{manifest_iteration_num},
               datasets: [{
-                  label: '# Playback Delay (ms)',
-                  data: !{playback_delay_time},
+                  label: '# Manifest Delay (ms)',
+                  data: !{manifest_delay_graph},
                   backgroundColor: [
                       'rgba(255, 99, 132, 0.2)',
                       'rgba(54, 162, 235, 0.2)',
@@ -57,6 +201,336 @@ block script
           },
           options: {
               scales: {
+                   xAxes: [{
+                          barThickness : 50
+                  }],
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero:true
+                      }
+                  }]
+              }
+          }
+      });
+
+     var ctx = document.getElementById("myChart1");
+        var myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: !{playback_iteration_num},
+              datasets: [{
+                  label: '# Playback Delay (ms)',
+                  data: !{playback_delay_graph},
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)'
+                  ],
+                  borderColor: [
+                      'rgba(255,99,132,1)',
+                      'rgba(54, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  xAxes: [{
+                        barThickness : 50
+                  }],
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero:true
+                      }
+                  }]
+              }
+          }
+      });      
+
+
+      var ctx = document.getElementById("droppedFrames");
+        var droppedFrames = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: !{dropped_frames_iteration_num},
+              datasets: [{
+                  label: '# Dropped Frames ',
+                  data: !{dropped_frames_graph},
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)'
+                  ],
+                  borderColor: [
+                      'rgba(255,99,132,1)',
+                      'rgba(54, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  xAxes: [{
+                        barThickness : 50
+                  }],
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero:true
+                      }
+                  }]
+              }
+          }
+      }); 
+ 
+      var ctx = document.getElementById("streamInitialization");
+        var streamInitialization = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: !{stream_initialization_iteration_num},
+              datasets: [{
+                  label: '# Stream Initialization Delays (ms) ',
+                  data: !{stream_initialization_graph},
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)'
+                  ],
+                  borderColor: [
+                      'rgba(255,99,132,1)',
+                      'rgba(54, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  xAxes: [{
+                        barThickness : 50
+                  }],
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero:true
+                      }
+                  }]
+              }
+          }
+      }); 
+
+      var ctx = document.getElementById("qualityChangeDelay");
+        var qualityChangeDelay = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: !{qulity_change_iteration_num},
+              datasets: [{
+                  label: '# Quality Change Delays (ms) ',
+                  data: !{qulity_change_graph},
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)'
+                  ],
+                  borderColor: [
+                      'rgba(255,99,132,1)',
+                      'rgba(54, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  xAxes: [{
+                        barThickness : 50
+                  }],
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero:true
+                      }
+                  }]
+              }
+          }
+      }); 
+
+      var ctx = document.getElementById("playBackSeekingDelay");
+        var playBackSeekingDelay = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: !{playback_seeking_iteration_num},
+              datasets: [{
+                  label: '# PlayBack Seeking Delays (ms) ',
+                  data: !{playback_seeking_graph},
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)'
+                  ],
+                  borderColor: [
+                      'rgba(255,99,132,1)',
+                      'rgba(54, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  xAxes: [{
+                        barThickness : 50
+                  }],
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero:true
+                      }
+                  }]
+              }
+          }
+      }); 
+
+      var ctx = document.getElementById("bufferStabletime");
+        var bufferStabletime = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: !{buffer_stable_time_iteration_num},
+              datasets: [{
+                  label: '# Buffer Stable Time (ms) ',
+                  data: !{buffer_stable_time_graph},
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)'
+                  ],
+                  borderColor: [
+                      'rgba(255,99,132,1)',
+                      'rgba(54, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  xAxes: [{
+                        barThickness : 50
+                  }],
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero:true
+                      }
+                  }]
+              }
+          }
+      });
+      var ctx = document.getElementById("playBackRate");
+        var playBackRate = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: !{playback_rate_iteration_num},
+              datasets: [{
+                  label: '# Playback Rate (ms) ',
+                  data: !{playback_rate_graph},
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)'
+                  ],
+                  borderColor: [
+                      'rgba(255,99,132,1)',
+                      'rgba(54, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  xAxes: [{
+                        barThickness : 50
+                  }],
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero:true
+                      }
+                  }]
+              }
+          }
+      });
+      var ctx = document.getElementById("bufferLevel");
+        var bufferLevel = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: !{buffer_level_avg_iteration_num},
+              datasets: [{
+                  label: '# Buffer Level ',
+                  data: !{buffer_level_avg_graph},
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)'
+                  ],
+                  borderColor: [
+                      'rgba(255,99,132,1)',
+                      'rgba(54, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  xAxes: [{
+                        barThickness : 50
+                  }],
                   yAxes: [{
                       ticks: {
                           beginAtZero:true

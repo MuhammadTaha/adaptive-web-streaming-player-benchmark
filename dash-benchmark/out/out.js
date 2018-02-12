@@ -16559,8 +16559,8 @@ function send_data() {
     http.open("POST", url, true);
     // console.log("param:" + params);
     //Send the proper header information along with the request
-    // http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    http.setRequestHeader('Content-type', 'application/json;charset=utf-8');
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    //http.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
 
     // http.setRequestHeader("Content-length", params.length);
     http.setRequestHeader("Connection", "close");

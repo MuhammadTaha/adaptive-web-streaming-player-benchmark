@@ -32,11 +32,11 @@ exports.create_bitrate = function (req, res) {
 exports.create_metric_values = function (req, res) {
 
   var request = req.body;
-  res.send("Hello");
+  //res.send("Hello");
 
-   console.log(request);    
+  // console.log(request);   
 
-   //res.end(request[0]["manifestLoad"].toString());
+   //res.send(request[0]["manifestLoad"].toString());
   // res.status(500).send(request[0]["manifestLoad"].toString());
 
 /*  if (request['id'])
