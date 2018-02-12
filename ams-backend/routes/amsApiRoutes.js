@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (app) {
+module.exports = function () {
 
   console.log("in controller");
   var ams_con = require('../api/controllers/amsApiController.js');
@@ -12,9 +12,6 @@ module.exports = function (app) {
   app.route('/metricvalues')
   .post(ams_con.create_metric_values);
 
-
-
-    
 
 
   };

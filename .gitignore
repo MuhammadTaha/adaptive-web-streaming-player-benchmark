@@ -6,6 +6,7 @@ dashjs-benchmark
 dashjs-benchmark/out
 dashjs-benchmark/dist
 ams-backend/node_modules
+RestApi
 */node_modules
 */.idea
 /.idea
