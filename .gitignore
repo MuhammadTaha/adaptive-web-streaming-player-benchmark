@@ -5,9 +5,6 @@ dash-benchmark/dist
 dashjs-benchmark
 dashjs-benchmark/out
 dashjs-benchmark/dist
-KongoPlugin
-RestAPI
-RestAPI/node_modules
 ams-backend/node_modules
 */node_modules
 */.idea
