@@ -173,116 +173,61 @@ player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
 
     // setProgressValue(bar,TEST_COUNT, tag+1,1,stages);
 
-    // console.log("Manifest loaded");
-    // console.log(JSON.stringify(delays));
-    // delays[tag][1] = delays[tag][0]-startingTime;
-
-    // delays[tag][1] = Date.now();
-
     delayObj.manifestLoad = Date.now() - startingTime;
     manifestLoadTime = Date.now();
-
-    // console.log("Memory performance");
-    // console.log(window.performance.memory);
     updateMetrics("video", player);
 });
 player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
-
-    // console.log("Stream initialized");
     // setProgressValue(bar,TEST_COUNT, tag+1,2,stages);
     delayObj.streamInitialised = Date.now() - manifestLoadTime;
-
-    // delays[tag].push(Date.now());
-    // delays["streamInitialization"].push(Date.now());
-
     updateMetrics("video", player);
-    // console.log(processInfo);
 });
 
 
 player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, function (e) {
-    // console.log("Playback started");
-    // delays[tag][3] = Date.now();
+
     // setProgressValue(bar,TEST_COUNT, tag+1,3,stages);
     delayObj.playbackStartDelay = Date.now() - manifestLoadTime;
-
-
-    // console.log("Memory performance");
-    // console.log(window.performance.memory);
-    //
-    // console.log("stream info");
-    // console.log(player.getActiveStream().getStreamInfo());
     updateMetrics("video", player);
 });
 
 let timeStart=0;
 let timeStartSeeking=0;
 player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_REQUESTED, function (e) {
-    // delays["qualityChangeRequested"].push(Date.now());
-    // delays[tag].push(Date.now());
 
-    // console.log(Date.now());
     // setProgressValue(bar,TEST_COUNT, tag+1,4,stages);
-    // delays[tag][4] = Date.now();
-
     timeStart = Date.now();
-
-    //
-    // console.log("Memory performance");
-    // console.log(window.performance.memory);
-    //
-    // console.log("Quality change rendered");
     updateMetrics("video", player);
 
 });
 
 
 player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_RENDERED, function (e) {
-    // delays["qualityChangeRendered"].push(Date.now());
-    // delays[tag].push(Date.now());
-    // delays[tag][5] = Date.now();
 
     delayObj.qualityChangeDelay = Date.now() - timeStart;
     // setProgressValue(bar,TEST_COUNT, tag+1,5,stages);
-    // console.log(Date.now());
-    // console.log("Memory performance");
-    // console.log(window.performance.memory);
-    // console.log("Quality change rendered");
     updateMetrics("video", player);
-    // console.log(processInfo);
 });
 
 player.on(dashjs.MediaPlayer.events.PLAYBACK_SEEKING, function (e) {
-    // delays["qualityChangeRendered"].push(Date.now());
-    // delays[tag].push(Date.now());
+
     delays[tag][6] = Date.now();
     // setProgressValue(bar,TEST_COUNT, tag+1,6,stages);
     timeStartSeeking =  Date.now();
-    // console.log(Date.now());
-    // console.log("Memory performance");
-    // console.log(window.performance.memory);
-    // console.log("Quality change rendered");
     updateMetrics("video", player);
-    // console.log(processInfo);
 });
 
 player.on(dashjs.MediaPlayer.events.PLAYBACK_SEEKED, function (e) {
-    // delays["qualityChangeRendered"].push(Date.now());
-    // delays[tag].push(Date.now());
+
     // setProgressValue(bar,TEST_COUNT, tag+1,7,stages);
     delays[tag][7] = Date.now();
     delayObj.playbackSeekingDelay = Date.now() - timeStartSeeking;
-
 });
 
 
 player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
-    console.log("Playback ended");
-    // console.log(Date.now());
-    setProgressValue(bar,TEST_COUNT, tag+1,8,stages);
-    // delays[tag][8] = Date.now();
 
-    // delays[tag].push(Date.now());
+    setProgressValue(bar,TEST_COUNT, tag+1,8,stages);
 
     console.log("TEST COUNT:" + tag);
 
@@ -322,24 +267,10 @@ function updateMetrics(type, player) {
     // var bitrate = repSwitch ? Math.round(dashMetrics.getBandwidthForRepresentation(repSwitch.to, periodIdx) / 1000) : NaN;
     var droppedFPS = dashMetrics.getCurrentDroppedFrames(metrics) ? dashMetrics.getCurrentDroppedFrames(metrics).droppedFrames : 0;
     delayObj.droppedFrames = droppedFPS;
-/*    console.log("metrices");
-    console.log("Get current track for video");
-    console.log(player.getCurrentTrackFor(type));
-    console.log("Get Quality current for");
-    console.log(player.getQualityFor(type));
-    console.log("Get playback rate: ");
-    console.log(player.getPlaybackRate());*/
+
     delayObj.playbackRate = player.getPlaybackRate();
-/*
-    console.log("Rep Switch : ");
-    console.log(repSwitch);
-    console.log("Current Dropped Frames:");
-    console.log(dashMetrics.getCurrentDroppedFrames(metrics));
-    console.log("Buffer stable time:");
-    console.log(player.getStableBufferTime());*/
     delayObj.bufferStableTime = player.getStableBufferTime();
     // console.log("Buffer level" + bufferLevel + " Index " + index + " DroppedFrames" + droppedFPS);
-
 }
 
 
