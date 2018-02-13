@@ -4,17 +4,6 @@ import Fingerprint2 from 'fingerprintjs2';
 import {BenchmarkMetrics,BrowserDetails} from "./BenchmarkMetrics";
 import ProgressBar from 'progressbar.js';
 
-// Time to playback start
-// Manifest parsing time
-// Segment conversion
-// CPU load
-// Frames per second
-// Memory load
-// Dropped frames
-// Rendered frames
-
-
-// - sending values from background page to content page
 
 let TEST_COUNT = 3;
 let tag = 0;
@@ -120,7 +109,7 @@ function setProgressValue(barObj,totalCycles, currentCycle,currentStage,totalSta
 let delays = new Array(TEST_COUNT)
 let delaysCollection = new Array();
 new Fingerprint2().get(function(browserId, components) {
-    delaysCollection.push({"browserId": browserId});
+    delaysCollection.push({"browserId": browserId ,"browserName": navigator.product, "browserVersion":navigator.appVersion});
 });
 
 
@@ -222,6 +211,7 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_SEEKED, function (e) {
     // setProgressValue(bar,TEST_COUNT, tag+1,7,stages);
     delays[tag][7] = Date.now();
     delayObj.playbackSeekingDelay = Date.now() - timeStartSeeking;
+    updateMetrics("video", player);
 });
 
 
@@ -231,7 +221,7 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
 
     console.log("TEST COUNT:" + tag);
 
-    // updateMetrics("video", player);
+    updateMetrics("video", player);
 
     if (tag < TEST_COUNT - 1) {
         tag = tag + 1;
@@ -270,6 +260,7 @@ function updateMetrics(type, player) {
 
     delayObj.playbackRate = player.getPlaybackRate();
     delayObj.bufferStableTime = player.getStableBufferTime();
+
     // console.log("Buffer level" + bufferLevel + " Index " + index + " DroppedFrames" + droppedFPS);
 }
 
@@ -282,8 +273,11 @@ function send_data() {
     var data = {};
     data.firstname = "John";
     data.lastname  = "Snow";
-    var json = JSON.stringify(delaysCollection);
 
+
+
+    var json = JSON.stringify(delaysCollection);
+console.log(JSON.stringify(delaysCollection));
     var xhr = new XMLHttpRequest();
     xhr.open("POST", url, true);
     // xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
@@ -293,7 +287,7 @@ function send_data() {
     // xhr.setRequestHeader('Accept','application/json');
     xhr.onload = function () {
 
-        console.log(xhr.responseText);
+        // console.log(xhr.responseText);
 
 
         if (xhr.readyState == 4 && xhr.status == "201") {
@@ -486,15 +480,16 @@ function send_data() {
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         console.log("receive message");
-        console.log(request.processInfo);
-        // if (request.processInfo) {
-        this.processInfo = request.processInfo;
-        console.log('send goodbye');
-        sendResponse({farewell: "goodbye"});
+        // console.log(request.processInfo);
+        let obj = Object.values(request.processInfo);
+        // console.log(obj[0].privateMemory);
 
+        delayObj.memoryUsage.push(obj[0].privateMemory);
+        // if (request.processInfo) {
+        // this.processInfo = request.processInfo;
+        // console.log('send goodbye');
+        sendResponse({farewell: "goodbye"});
         // }
-}).catch((err)=>{
-    console.error(err);
 });
 
 

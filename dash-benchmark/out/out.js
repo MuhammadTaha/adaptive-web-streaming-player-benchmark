@@ -16190,18 +16190,6 @@ var _progressbar2 = _interopRequireDefault(_progressbar);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// Time to playback start
-// Manifest parsing time
-// Segment conversion
-// CPU load
-// Frames per second
-// Memory load
-// Dropped frames
-// Rendered frames
-
-
-// - sending values from background page to content page
-
 var TEST_COUNT = 3;
 var tag = 0;
 var METRICES_COUNT = 9;
@@ -16303,7 +16291,8 @@ function setProgressValue(barObj, totalCycles, currentCycle, currentStage, total
 var delays = new Array(TEST_COUNT);
 var delaysCollection = new Array();
 new _fingerprintjs2.default().get(function (browserId, components) {
-    delaysCollection.push({ "browserId": browserId });
+    console.log(browserId);
+    delaysCollection.push({ "browserId": browserId, "browserName": navigator.product, "browserVersion": navigator.appVersion });
 });
 
 var delayObj = new _BenchmarkMetrics.BenchmarkMetrics();
@@ -16349,114 +16338,62 @@ player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
 
     // setProgressValue(bar,TEST_COUNT, tag+1,1,stages);
 
-    // console.log("Manifest loaded");
-    // console.log(JSON.stringify(delays));
-    // delays[tag][1] = delays[tag][0]-startingTime;
-
-    // delays[tag][1] = Date.now();
-
     delayObj.manifestLoad = Date.now() - startingTime;
     manifestLoadTime = Date.now();
-
-    // console.log("Memory performance");
-    // console.log(window.performance.memory);
     updateMetrics("video", player);
 });
 player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, function (e) {
-
-    // console.log("Stream initialized");
     // setProgressValue(bar,TEST_COUNT, tag+1,2,stages);
     delayObj.streamInitialised = Date.now() - manifestLoadTime;
-
-    // delays[tag].push(Date.now());
-    // delays["streamInitialization"].push(Date.now());
-
     updateMetrics("video", player);
-    // console.log(processInfo);
 });
 
 player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, function (e) {
-    // console.log("Playback started");
-    // delays[tag][3] = Date.now();
+
     // setProgressValue(bar,TEST_COUNT, tag+1,3,stages);
     delayObj.playbackStartDelay = Date.now() - manifestLoadTime;
-
-    // console.log("Memory performance");
-    // console.log(window.performance.memory);
-    //
-    // console.log("stream info");
-    // console.log(player.getActiveStream().getStreamInfo());
     updateMetrics("video", player);
 });
 
 var timeStart = 0;
 var timeStartSeeking = 0;
 player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_REQUESTED, function (e) {
-    // delays["qualityChangeRequested"].push(Date.now());
-    // delays[tag].push(Date.now());
 
-    // console.log(Date.now());
     // setProgressValue(bar,TEST_COUNT, tag+1,4,stages);
-    // delays[tag][4] = Date.now();
-
     timeStart = Date.now();
-
-    //
-    // console.log("Memory performance");
-    // console.log(window.performance.memory);
-    //
-    // console.log("Quality change rendered");
     updateMetrics("video", player);
 });
 
 player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_RENDERED, function (e) {
-    // delays["qualityChangeRendered"].push(Date.now());
-    // delays[tag].push(Date.now());
-    // delays[tag][5] = Date.now();
 
     delayObj.qualityChangeDelay = Date.now() - timeStart;
     // setProgressValue(bar,TEST_COUNT, tag+1,5,stages);
-    // console.log(Date.now());
-    // console.log("Memory performance");
-    // console.log(window.performance.memory);
-    // console.log("Quality change rendered");
     updateMetrics("video", player);
-    // console.log(processInfo);
 });
 
 player.on(dashjs.MediaPlayer.events.PLAYBACK_SEEKING, function (e) {
-    // delays["qualityChangeRendered"].push(Date.now());
-    // delays[tag].push(Date.now());
+
     delays[tag][6] = Date.now();
     // setProgressValue(bar,TEST_COUNT, tag+1,6,stages);
     timeStartSeeking = Date.now();
-    // console.log(Date.now());
-    // console.log("Memory performance");
-    // console.log(window.performance.memory);
-    // console.log("Quality change rendered");
     updateMetrics("video", player);
-    // console.log(processInfo);
 });
 
 player.on(dashjs.MediaPlayer.events.PLAYBACK_SEEKED, function (e) {
-    // delays["qualityChangeRendered"].push(Date.now());
-    // delays[tag].push(Date.now());
+
     // setProgressValue(bar,TEST_COUNT, tag+1,7,stages);
     delays[tag][7] = Date.now();
     delayObj.playbackSeekingDelay = Date.now() - timeStartSeeking;
+    updateMetrics("video", player);
 });
 
 player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
-    console.log("Playback ended");
-    // console.log(Date.now());
-    setProgressValue(bar, TEST_COUNT, tag + 1, 8, stages);
-    // delays[tag][8] = Date.now();
 
-    // delays[tag].push(Date.now());
+    setProgressValue(bar, TEST_COUNT, tag + 1, 8, stages);
 
     console.log("TEST COUNT:" + tag);
 
-    // updateMetrics("video", player);
+    updateMetrics("video", player);
 
     if (tag < TEST_COUNT - 1) {
         tag = tag + 1;
@@ -16490,22 +16427,10 @@ function updateMetrics(type, player) {
     // var bitrate = repSwitch ? Math.round(dashMetrics.getBandwidthForRepresentation(repSwitch.to, periodIdx) / 1000) : NaN;
     var droppedFPS = dashMetrics.getCurrentDroppedFrames(metrics) ? dashMetrics.getCurrentDroppedFrames(metrics).droppedFrames : 0;
     delayObj.droppedFrames = droppedFPS;
-    /*    console.log("metrices");
-        console.log("Get current track for video");
-        console.log(player.getCurrentTrackFor(type));
-        console.log("Get Quality current for");
-        console.log(player.getQualityFor(type));
-        console.log("Get playback rate: ");
-        console.log(player.getPlaybackRate());*/
+
     delayObj.playbackRate = player.getPlaybackRate();
-    /*
-        console.log("Rep Switch : ");
-        console.log(repSwitch);
-        console.log("Current Dropped Frames:");
-        console.log(dashMetrics.getCurrentDroppedFrames(metrics));
-        console.log("Buffer stable time:");
-        console.log(player.getStableBufferTime());*/
     delayObj.bufferStableTime = player.getStableBufferTime();
+
     // console.log("Buffer level" + bufferLevel + " Index " + index + " DroppedFrames" + droppedFPS);
 }
 
@@ -16518,7 +16443,7 @@ function send_data() {
     data.firstname = "John";
     data.lastname = "Snow";
     var json = JSON.stringify(delaysCollection);
-
+    console.log(JSON.stringify(delaysCollection));
     var xhr = new XMLHttpRequest();
     xhr.open("POST", url, true);
     // xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
@@ -16528,7 +16453,8 @@ function send_data() {
     // xhr.setRequestHeader('Accept','application/json');
     xhr.onload = function () {
 
-        console.log(xhr.responseText);
+        // console.log(xhr.responseText);
+
 
         if (xhr.readyState == 4 && xhr.status == "201") {
             if (xhr.responseText) {
@@ -16715,15 +16641,16 @@ function send_data() {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     console.log("receive message");
-    console.log(request.processInfo);
-    // if (request.processInfo) {
-    this.processInfo = request.processInfo;
-    console.log('send goodbye');
-    sendResponse({ farewell: "goodbye" });
+    // console.log(request.processInfo);
+    var obj = Object.values(request.processInfo);
+    // console.log(obj[0].privateMemory);
 
+    delayObj.memoryUsage.push(obj[0].privateMemory);
+    // if (request.processInfo) {
+    // this.processInfo = request.processInfo;
+    // console.log('send goodbye');
+    sendResponse({ farewell: "goodbye" });
     // }
-}).catch(function (err) {
-    console.error(err);
 });
 
 /***/ }),
@@ -36162,6 +36089,7 @@ var BenchmarkMetrics = exports.BenchmarkMetrics = function BenchmarkMetrics() {
     this.bufferStableTime = 0;
     this.droppedFrames = 0;
     this.bufferLevel = new Array();
+    this.memoryUsage = new Array();
 };
 
 var BrowserDetails = exports.BrowserDetails = function () {
@@ -36169,6 +36097,8 @@ var BrowserDetails = exports.BrowserDetails = function () {
         _classCallCheck(this, BrowserDetails);
 
         this.browserId = 0;
+        this.browserName = "";
+        this.browserVersion = "";
     }
 
     _createClass(BrowserDetails, null, [{
@@ -36180,6 +36110,26 @@ var BrowserDetails = exports.BrowserDetails = function () {
         key: "getBrowserId",
         value: function getBrowserId() {
             return this.browserid;
+        }
+    }, {
+        key: "setBrowserName",
+        value: function setBrowserName(value) {
+            this.browserName = value;
+        }
+    }, {
+        key: "getBrowserName",
+        value: function getBrowserName() {
+            return this.browserName;
+        }
+    }, {
+        key: "setBrowserVersion",
+        value: function setBrowserVersion(value) {
+            this.browserVersion = value;
+        }
+    }, {
+        key: "getBrowserVersion",
+        value: function getBrowserVersion() {
+            return this.browserVersion;
         }
     }]);
 

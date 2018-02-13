@@ -11,9 +11,9 @@ console.log("tab updated ");
             console.log(processInfo);
 
             chrome.tabs.sendMessage(tabId, {processInfo: processInfo}, function (response) {
-                // if (response.farewell) {
+                 if (response.farewell != undefined) {
                     console.log(response.farewell);
-                // }
+                }
             });
         }
         });
@@ -32,9 +32,9 @@ chrome.processes.getProcessIdForTab(tab.tabId, (processId)=>{
         console.log(processInfo);
 
         chrome.tabs.sendMessage(tab.tabId, {processInfo: processInfo}, function (response) {
-            // if (response.farewell) {
+            if (response.farewell != undefined) {
                 console.log(response.farewell);
-            // }
+            }
         });
     }
     });
