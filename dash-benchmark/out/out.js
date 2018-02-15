@@ -16201,7 +16201,8 @@ var processInfo = '';
 
 // Initializing Player
 // let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
-var url = "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd";
+// let url = "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd";
+var url = "http://demo.unified-streaming.com/video/ateam/ateam.ism/ateam.mpd";
 var player = dashjs.MediaPlayer().create();
 player.initialize(document.querySelector('#dashPlayer'), url, false);
 player.getDebug().setLogToBrowserConsole(false);
@@ -16291,7 +16292,6 @@ function setProgressValue(barObj, totalCycles, currentCycle, currentStage, total
 var delays = new Array(TEST_COUNT);
 var delaysCollection = new Array();
 new _fingerprintjs2.default().get(function (browserId, components) {
-    console.log(browserId);
     delaysCollection.push({ "browserId": browserId, "browserName": navigator.product, "browserVersion": navigator.appVersion });
 });
 
@@ -16442,6 +16442,7 @@ function send_data() {
     var data = {};
     data.firstname = "John";
     data.lastname = "Snow";
+
     var json = JSON.stringify(delaysCollection);
     console.log(JSON.stringify(delaysCollection));
     var xhr = new XMLHttpRequest();

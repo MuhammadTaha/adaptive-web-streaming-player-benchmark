@@ -17,7 +17,8 @@ let processInfo = '';
 
 // Initializing Player
 // let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
-let url = "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd";
+// let url = "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd";
+let url = "http://demo.unified-streaming.com/video/ateam/ateam.ism/ateam.mpd";
 let player = dashjs.MediaPlayer().create();
 player.initialize(document.querySelector('#dashPlayer'), url, false);
 player.getDebug().setLogToBrowserConsole(false);
