@@ -20,6 +20,7 @@ module.exports = {
             { from: 'src/manifest.json', to: 'manifest.json' },
 
         ])
+        
     ],
     module: {
         loaders: [
