@@ -16188,7 +16188,11 @@ var _progressbar = __webpack_require__(251);
 
 var _progressbar2 = _interopRequireDefault(_progressbar);
 
-var _jquery = __webpack_require__(255);
+var _browserInfo = __webpack_require__(255);
+
+var _browserInfo2 = _interopRequireDefault(_browserInfo);
+
+var _jquery = __webpack_require__(256);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
@@ -16204,8 +16208,6 @@ var storage_item_playback_delay = "playback_delay_time_";
 var processInfo = '';
 
 // Initializing Player
-// let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
-// let url = "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd";
 var url = "http://demo.unified-streaming.com/video/ateam/ateam.ism/ateam.mpd";
 var player = dashjs.MediaPlayer().create();
 player.initialize(document.querySelector('#dashPlayer'), url, false);
@@ -16237,7 +16239,6 @@ btnSendData.className = "btnSendDataBenchmark";
 btnSendData.name = "btnSendDataBenchmark"; //auto loop option to the stream
 btnSendData.style.marginLeft = "1%";
 
-// let divSendData = document.createElement("div");
 divBench.appendChild(btnSendData);
 
 // Adding Progressbar div
@@ -16247,16 +16248,13 @@ divProgressbar.style.cssText = "width: 50%;margin-left: 25%;text-align: right;";
 
 divBench.appendChild(divProgressbar);
 elementTag[0].parentNode.insertBefore(divBench, elementTag[0]);
-// elementTag[0].parentNode.insertBefore(divSendData, elementTag[0]);
-// elementTag[0].parentNode.insertBefore(divProgressbar, elementTag[0]);
-
 
 var bar = new _progressbar2.default.Line("#progressbar", {
     strokeWidth: 2,
     easing: 'easeInOut',
     duration: 1400,
     color: '#FF8100',
-    trailColor: '#eee',
+    trailColor: '#EEE',
     trailWidth: 2,
     svgStyle: { width: '100%', height: '100%' },
     text: {
@@ -16295,8 +16293,17 @@ function setProgressValue(barObj, totalCycles, currentCycle, currentStage, total
 
 var delays = new Array(TEST_COUNT);
 var delaysCollection = new Array();
+
+//getting browser info
+var bInfo = (0, _browserInfo2.default)();
+
 new _fingerprintjs2.default().get(function (browserId, components) {
-    delaysCollection.push({ "browserId": browserId, "browserName": navigator.product, "browserVersion": navigator.appVersion });
+
+    delaysCollection.push({
+        "browserId": browserId,
+        "browserName": bInfo.name,
+        "browserVersion": bInfo.version
+    });
 });
 
 var delayObj = new _BenchmarkMetrics.BenchmarkMetrics();
@@ -16417,25 +16424,17 @@ function updateMetrics(type, player) {
     var metrics = player.getMetricsFor(type);
     var dashMetrics = player.getDashMetrics();
 
-    // if (metrics && dashMetrics && $scope.streamInfo) {
-    //     if (metrics && dashMetrics ) {
-    // var periodIdx = $scope.streamInfo.index;
-
     var repSwitch = dashMetrics.getCurrentRepresentationSwitch(metrics);
     var bufferLevel = dashMetrics.getCurrentBufferLevel(metrics);
 
     delayObj.bufferLevel.push(bufferLevel);
 
-    // var maxIndex = dashMetrics.getMaxIndexForBufferType(type, periodIdx);
     var index = player.getQualityFor(type);
-    // var bitrate = repSwitch ? Math.round(dashMetrics.getBandwidthForRepresentation(repSwitch.to, periodIdx) / 1000) : NaN;
     var droppedFPS = dashMetrics.getCurrentDroppedFrames(metrics) ? dashMetrics.getCurrentDroppedFrames(metrics).droppedFrames : 0;
     delayObj.droppedFrames = droppedFPS;
 
     delayObj.playbackRate = player.getPlaybackRate();
     delayObj.bufferStableTime = player.getStableBufferTime();
-
-    // console.log("Buffer level" + bufferLevel + " Index " + index + " DroppedFrames" + droppedFPS);
 }
 
 function send_data() {
@@ -16449,10 +16448,9 @@ function send_data() {
             type: "POST",
             url: url,
             data: data,
-            contentType: "application/json",
+            // contentType: "application/json",
             //dataType: "json",
             success: function success(response) {
-
                 console.log("ResponseData:" + response);
             },
             error: function error(_error) {
@@ -16463,15 +16461,10 @@ function send_data() {
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    console.log("receive message");
-    // console.log(request.processInfo);
     var obj = Object.values(request.processInfo);
-    // console.log(obj[0].privateMemory);
 
     delayObj.memoryUsage.push(obj[0].privateMemory);
     // if (request.processInfo) {
-    // this.processInfo = request.processInfo;
-    // console.log('send goodbye');
     sendResponse({ farewell: "goodbye" });
     // }
 });
@@ -37682,6 +37675,114 @@ module.exports = SemiCircle;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* globals navigator*/
+
+
+
+function getOS(userAgent) {
+  if (userAgent.indexOf('Windows Phone') !== -1) {
+    return 'Windows Phone';
+  }
+  if (userAgent.indexOf('Win') !== -1) {
+    return 'Windows';
+  }
+  if (userAgent.indexOf('Android') !== -1) {
+    return 'Android';
+  }
+  if (userAgent.indexOf('Linux') !== -1) {
+    return 'Linux';
+  }
+  if (userAgent.indexOf('X11') !== -1) {
+    return 'UNIX';
+  }
+  if (/iPad|iPhone|iPod/.test(userAgent)) {
+    return 'iOS';
+  }
+  if (userAgent.indexOf('Mac') !== -1) {
+    return 'OS X';
+  }
+}
+
+function info(userAgent) {
+  var ua = userAgent || navigator.userAgent;
+  var tem;
+
+  var os = getOS(ua);
+  var match = ua.match(/(opera|coast|chrome|safari|firefox|edge|trident(?=\/))\/?\s*?(\S+)/i) || [];
+
+  tem = ua.match(/\bIEMobile\/(\S+[0-9])/);
+  if (tem !== null) {
+    return {
+      name: 'IEMobile',
+      version: tem[1].split('.')[0],
+      fullVersion: tem[1],
+      os: os
+    };
+  }
+
+  if (/trident/i.test(match[1])) {
+    tem = /\brv[ :]+(\S+[0-9])/g.exec(ua) || [];
+    return {
+      name: 'IE',
+      version: tem[1] && tem[1].split('.')[0],
+      fullVersion: tem[1],
+      os: os
+    };
+  }
+
+  if (match[1] === 'Chrome') {
+    tem = ua.match(/\bOPR\/(\d+)/);
+    if (tem !== null) {
+      return {
+        name: 'Opera',
+        version: tem[1].split('.')[0],
+        fullVersion: tem[1],
+        os: os
+      };
+    }
+
+    tem = ua.match(/\bEdge\/(\S+)/);
+    if (tem !== null) {
+      return {
+        name: 'Edge',
+        version: tem[1].split('.')[0],
+        fullVersion: tem[1],
+        os: os
+      };
+    }
+  }
+  match = match[2] ? [match[1], match[2]] : [navigator.appName, navigator.appVersion, '-?'];
+
+  if (match[0] === 'Coast') {
+    match[0] = 'OperaCoast';
+  }
+
+  if (match[0] !== 'Chrome') {
+    var tem = ua.match(/version\/(\S+)/i);
+    if (tem !== null && tem !== '') {
+      match.splice(1, 1, tem[1]);
+    }
+  }
+
+  if (match[0] === 'Firefox') {
+    match[0] = /waterfox/i.test(ua) ? 'Waterfox' : match[0];
+  }
+
+  return {
+    name: match[0],
+    version: match[1].split('.')[0],
+    fullVersion: match[1],
+    os: os
+  };
+}
+
+module.exports = info;
+
+/***/ }),
+/* 256 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -47604,10 +47705,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 	return jQuery;
 });
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(256)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(257)(module)))
 
 /***/ }),
-/* 256 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

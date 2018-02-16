@@ -1,8 +1,10 @@
 import {MediaPlayer, Debug} from 'dashjs';
 import promise from 'promise';
 import Fingerprint2 from 'fingerprintjs2';
-import {BenchmarkMetrics,BrowserDetails} from "./BenchmarkMetrics";
+import {BenchmarkMetrics, BrowserDetails} from "./BenchmarkMetrics";
 import ProgressBar from 'progressbar.js';
+import browserInfo from 'browser-info';
+
 import $ from "jquery";
 
 
@@ -49,7 +51,6 @@ btnSendData.className = "btnSendDataBenchmark";
 btnSendData.name = "btnSendDataBenchmark";//auto loop option to the stream
 btnSendData.style.marginLeft = "1%";
 
-// let divSendData = document.createElement("div");
 divBench.appendChild(btnSendData);
 
 // Adding Progressbar div
@@ -59,16 +60,13 @@ divProgressbar.style.cssText = "width: 50%;margin-left: 25%;text-align: right;";
 
 divBench.appendChild(divProgressbar);
 elementTag[0].parentNode.insertBefore(divBench, elementTag[0]);
-// elementTag[0].parentNode.insertBefore(divSendData, elementTag[0]);
-// elementTag[0].parentNode.insertBefore(divProgressbar, elementTag[0]);
-
 
 var bar = new ProgressBar.Line("#progressbar", {
     strokeWidth: 2,
     easing: 'easeInOut',
     duration: 1400,
     color: '#FF8100',
-    trailColor: '#eee',
+    trailColor: '#EEE',
     trailWidth: 2,
     svgStyle: {width: '100%', height: '100%'},
     text: {
@@ -88,16 +86,16 @@ var bar = new ProgressBar.Line("#progressbar", {
     from: {color: '#FFEA82'},
     to: {color: '#ED6A5A'},
     step: (state, bar) => {
-        bar.setText(Math.round(bar.value() * 100) + ' % Completed');
+    bar.setText(Math.round(bar.value() * 100) + ' % Completed');
     }
 });
 
 bar.animate(0.0);  // Number from 0.0 to 1.0
 bar.set(0.0);
 
-function setProgressValue(barObj,totalCycles, currentCycle,currentStage,totalStages){
+function setProgressValue(barObj, totalCycles, currentCycle, currentStage, totalStages) {
 
-    let ans = (currentCycle/totalCycles).toFixed(3);
+    let ans = (currentCycle / totalCycles).toFixed(3);
     // let ans = ((currentCycle/totalCycles)*(currentStage/totalStages)).toFixed(3);
 
     bar = barObj;
@@ -108,32 +106,39 @@ function setProgressValue(barObj,totalCycles, currentCycle,currentStage,totalSta
 
 let delays = new Array(TEST_COUNT)
 let delaysCollection = new Array();
-new Fingerprint2().get(function(browserId, components) {
-    delaysCollection.push({"browserId": browserId ,"browserName": navigator.product, "browserVersion":navigator.appVersion});
+
+//getting browser info
+let bInfo = browserInfo();
+
+new Fingerprint2().get(function (browserId, components) {
+
+    delaysCollection.push({
+        "browserId": browserId,
+        "browserName": bInfo.name,
+        "browserVersion": bInfo.version
+    });
 });
 
 
 let delayObj = new BenchmarkMetrics();
 
 
-function start_benchmark(){
+function start_benchmark() {
     bar.animate(0.0);  // Number from 0.0 to 1.0
     bar.set(0.0);
     playback_restart();
 }
 
-
-
+// for restarting the stream
 function playback_restart() {
 
-    // for restarting the stream
     player.seek(0);
 
     startingTime = Date.now();
     delaysCollection.push(delayObj);
     console.log(JSON.stringify(delaysCollection));
 
-    delayObj= new BenchmarkMetrics();
+    delayObj = new BenchmarkMetrics();
     player.play();
 }
 
@@ -149,14 +154,13 @@ for (var i = 0; i < buttonsSendData.length; i++) {
 }
 
 
-
 for (i = 0; i < TEST_COUNT; i++) {
     delays[i] = new Array(METRICES_COUNT);
 }
 
 
 let manifestLoadTime = 0;
-let stages=8;
+let stages = 8;
 
 player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function (e) {
 
@@ -180,8 +184,8 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, function (e) {
     updateMetrics("video", player);
 });
 
-let timeStart=0;
-let timeStartSeeking=0;
+let timeStart = 0;
+let timeStartSeeking = 0;
 player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_REQUESTED, function (e) {
 
     // setProgressValue(bar,TEST_COUNT, tag+1,4,stages);
@@ -202,7 +206,7 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_SEEKING, function (e) {
 
     delays[tag][6] = Date.now();
     // setProgressValue(bar,TEST_COUNT, tag+1,6,stages);
-    timeStartSeeking =  Date.now();
+    timeStartSeeking = Date.now();
     updateMetrics("video", player);
 });
 
@@ -217,25 +221,17 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_SEEKED, function (e) {
 
 player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
 
-    setProgressValue(bar,TEST_COUNT, tag+1,8,stages);
-
-    console.log("TEST COUNT:" + tag);
-
+    setProgressValue(bar, TEST_COUNT, tag + 1, 8, stages);
     updateMetrics("video", player);
 
     if (tag < TEST_COUNT - 1) {
         tag = tag + 1;
-        // delays[tag][0] = Date.now();
         playback_restart();
-
-        
-
     } else {
         player.seek(0);
         player.pause();
         tag = 0;
         send_data();
-        // alert("Benchmark completed");
     }
 });
 
@@ -245,72 +241,52 @@ function updateMetrics(type, player) {
     var metrics = player.getMetricsFor(type);
     var dashMetrics = player.getDashMetrics();
 
-    // if (metrics && dashMetrics && $scope.streamInfo) {
-    //     if (metrics && dashMetrics ) {
-    // var periodIdx = $scope.streamInfo.index;
-
     var repSwitch = dashMetrics.getCurrentRepresentationSwitch(metrics);
     var bufferLevel = dashMetrics.getCurrentBufferLevel(metrics);
 
     delayObj.bufferLevel.push(bufferLevel);
 
-    // var maxIndex = dashMetrics.getMaxIndexForBufferType(type, periodIdx);
     var index = player.getQualityFor(type);
-    // var bitrate = repSwitch ? Math.round(dashMetrics.getBandwidthForRepresentation(repSwitch.to, periodIdx) / 1000) : NaN;
     var droppedFPS = dashMetrics.getCurrentDroppedFrames(metrics) ? dashMetrics.getCurrentDroppedFrames(metrics).droppedFrames : 0;
     delayObj.droppedFrames = droppedFPS;
 
     delayObj.playbackRate = player.getPlaybackRate();
     delayObj.bufferStableTime = player.getStableBufferTime();
-
-    // console.log("Buffer level" + bufferLevel + " Index " + index + " DroppedFrames" + droppedFPS);
 }
 
 
 function send_data() {
 
+    $(function () {
 
-$(function () {
-        
-      var url = "http://localhost:4022/metricvalues";
-      var data = JSON.stringify(delaysCollection);
-      
-     $.ajax({
-              type: "POST",
-              url: url,
-              data: data,
-              contentType: "application/json",
-              //dataType: "json",
-              success: function(response) {
-               
-                  console.log("ResponseData:"+ response);
+        var url = "http://localhost:4022/metricvalues";
+        var data = JSON.stringify(delaysCollection);
 
-               },
-              error: function(error) {
-                  console.log("ErrorData:"+ response);
-              }
-       });
-        
-   });
-
-
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: data,
+            // contentType: "application/json",
+            //dataType: "json",
+            success: function (response) {
+                console.log("ResponseData:" + response);
+            },
+            error: function (error) {
+                console.log("ErrorData:" + response);
+            }
+        });
+    });
 }
-
 
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
-        console.log("receive message");
-        // console.log(request.processInfo);
         let obj = Object.values(request.processInfo);
-        // console.log(obj[0].privateMemory);
 
         delayObj.memoryUsage.push(obj[0].privateMemory);
         // if (request.processInfo) {
-        // this.processInfo = request.processInfo;
-        // console.log('send goodbye');
         sendResponse({farewell: "goodbye"});
         // }
-});
-
+    }
+);
 
