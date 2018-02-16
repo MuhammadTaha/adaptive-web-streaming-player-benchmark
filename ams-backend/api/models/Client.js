@@ -19,6 +19,10 @@ var Client = sequelize.define('clients',{
   name: {
     type: Sequelize.STRING(50),
     allowNull: false,
+  },
+  version: {
+    type: Sequelize.TEXT,
+    allowNull: false,
   }
  
    

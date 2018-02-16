@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 16, 2018 at 02:45 PM
+-- Generation Time: Feb 16, 2018 at 03:52 PM
 -- Server version: 5.7.19-0ubuntu0.16.04.1
 -- PHP Version: 7.0.22-0ubuntu0.16.04.1
 
@@ -24,8 +24,8 @@ SET time_zone = "+00:00";
 -- Dumping data for table `clients`
 --
 
-INSERT INTO `clients` (`id`, `ClientID`, `name`) VALUES
-(1, '25af290fa400463044b3238fa2cb29ae', '');
+INSERT INTO `clients` (`id`, `ClientID`, `name`, `version`) VALUES
+(1, '25af290fa400463044b3238fa2cb29ae', 'Gecko', '5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36');
 
 --
 -- Dumping data for table `iterations`
