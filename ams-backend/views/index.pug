@@ -4,8 +4,8 @@ block content
   h1= title
   p Welcome to Adaptive Media Streaming Reporting System
 
-  p Last Test ID: 1
-  p Test Iterations: 3
+  p Test ID: #{test_id}
+  p Number of Iterations: #{num_iterations}
 
 
   p Metric Results: Manifest Delays
@@ -169,6 +169,23 @@ block content
 
   #container
     <canvas id="bufferLevel" width="100%" height="50"></canvas>
+  //    div
+  //        p Metric Results: Memory Usage:
+  //
+  //
+  //    table(border='1' width='100%')
+  //        thead
+  //            tr
+  //                th Iteration Number
+  //                th Memory Usage
+  //        tbody
+  //            each value, i in memory_usage_details
+  //                tr
+  //                    td= value.it_num
+  //                    td= value.val
+  //
+  //#container
+  //   <canvas id="memoryUsage" width="100%" height="50"></canvas>
 
 block script
   script.
@@ -180,22 +197,8 @@ block script
               datasets: [{
                   label: '# Manifest Delay (ms)',
                   data: !{manifest_delay_graph},
-                  backgroundColor: [
-                      'rgba(255, 99, 132, 0.2)',
-                      'rgba(54, 162, 235, 0.2)',
-                      'rgba(255, 206, 86, 0.2)',
-                      'rgba(75, 192, 192, 0.2)',
-                      'rgba(153, 102, 255, 0.2)',
-                      'rgba(255, 159, 64, 0.2)'
-                  ],
-                  borderColor: [
-                      'rgba(255,99,132,1)',
-                      'rgba(54, 162, 235, 1)',
-                      'rgba(255, 206, 86, 1)',
-                      'rgba(75, 192, 192, 1)',
-                      'rgba(153, 102, 255, 1)',
-                      'rgba(255, 159, 64, 1)'
-                  ],
+                  backgroundColor:'rgba(255, 99, 132, 0.2)',
+                  borderColor: 'rgba(255,99,132,1)',
                   borderWidth: 1
               }]
           },
@@ -216,22 +219,8 @@ block script
               datasets: [{
                   label: '# Playback Delay (ms)',
                   data: !{playback_delay_graph},
-                  backgroundColor: [
-                      'rgba(255, 99, 132, 0.2)',
-                      'rgba(54, 162, 235, 0.2)',
-                      'rgba(255, 206, 86, 0.2)',
-                      'rgba(75, 192, 192, 0.2)',
-                      'rgba(153, 102, 255, 0.2)',
-                      'rgba(255, 159, 64, 0.2)'
-                  ],
-                  borderColor: [
-                      'rgba(255,99,132,1)',
-                      'rgba(54, 162, 235, 1)',
-                      'rgba(255, 206, 86, 1)',
-                      'rgba(75, 192, 192, 1)',
-                      'rgba(153, 102, 255, 1)',
-                      'rgba(255, 159, 64, 1)'
-                  ],
+                  borderColor: 'rgba(255,99,132,1)',
+                  backgroundColor:'rgba(255, 99, 132, 0.2)',
                   borderWidth: 1
               }]
           },
@@ -253,22 +242,8 @@ block script
               datasets: [{
                   label: '# Dropped Frames ',
                   data: !{dropped_frames_graph},
-                  backgroundColor: [
-                      'rgba(255, 99, 132, 0.2)',
-                      'rgba(54, 162, 235, 0.2)',
-                      'rgba(255, 206, 86, 0.2)',
-                      'rgba(75, 192, 192, 0.2)',
-                      'rgba(153, 102, 255, 0.2)',
-                      'rgba(255, 159, 64, 0.2)'
-                  ],
-                  borderColor: [
-                      'rgba(255,99,132,1)',
-                      'rgba(54, 162, 235, 1)',
-                      'rgba(255, 206, 86, 1)',
-                      'rgba(75, 192, 192, 1)',
-                      'rgba(153, 102, 255, 1)',
-                      'rgba(255, 159, 64, 1)'
-                  ],
+                  backgroundColor:'rgba(255, 99, 132, 0.2)',
+                  borderColor: 'rgba(255,99,132,1)',
                   borderWidth: 1
               }]
           },
@@ -289,22 +264,8 @@ block script
               datasets: [{
                   label: '# Stream Initialization Delays (ms) ',
                   data: !{stream_initialization_graph},
-                  backgroundColor: [
-                      'rgba(255, 99, 132, 0.2)',
-                      'rgba(54, 162, 235, 0.2)',
-                      'rgba(255, 206, 86, 0.2)',
-                      'rgba(75, 192, 192, 0.2)',
-                      'rgba(153, 102, 255, 0.2)',
-                      'rgba(255, 159, 64, 0.2)'
-                  ],
-                  borderColor: [
-                      'rgba(255,99,132,1)',
-                      'rgba(54, 162, 235, 1)',
-                      'rgba(255, 206, 86, 1)',
-                      'rgba(75, 192, 192, 1)',
-                      'rgba(153, 102, 255, 1)',
-                      'rgba(255, 159, 64, 1)'
-                  ],
+                  backgroundColor:'rgba(255, 99, 132, 0.2)',
+                  borderColor: 'rgba  (255,99,132,1)',
                   borderWidth: 1
               }]
           },
@@ -325,22 +286,8 @@ block script
               datasets: [{
                   label: '# Quality Change Delays (ms) ',
                   data: !{qulity_change_graph},
-                  backgroundColor: [
-                      'rgba(255, 99, 132, 0.2)',
-                      'rgba(54, 162, 235, 0.2)',
-                      'rgba(255, 206, 86, 0.2)',
-                      'rgba(75, 192, 192, 0.2)',
-                      'rgba(153, 102, 255, 0.2)',
-                      'rgba(255, 159, 64, 0.2)'
-                  ],
-                  borderColor: [
-                      'rgba(255,99,132,1)',
-                      'rgba(54, 162, 235, 1)',
-                      'rgba(255, 206, 86, 1)',
-                      'rgba(75, 192, 192, 1)',
-                      'rgba(153, 102, 255, 1)',
-                      'rgba(255, 159, 64, 1)'
-                  ],
+                  backgroundColor:'rgba(255, 99, 132, 0.2)',
+                  borderColor: 'rgba(255,99,132,1)',
                   borderWidth: 1
               }]
           },
@@ -361,22 +308,8 @@ block script
               datasets: [{
                   label: '# PlayBack Seeking Delays (ms) ',
                   data: !{playback_seeking_graph},
-                  backgroundColor: [
-                      'rgba(255, 99, 132, 0.2)',
-                      'rgba(54, 162, 235, 0.2)',
-                      'rgba(255, 206, 86, 0.2)',
-                      'rgba(75, 192, 192, 0.2)',
-                      'rgba(153, 102, 255, 0.2)',
-                      'rgba(255, 159, 64, 0.2)'
-                  ],
-                  borderColor: [
-                      'rgba(255,99,132,1)',
-                      'rgba(54, 162, 235, 1)',
-                      'rgba(255, 206, 86, 1)',
-                      'rgba(75, 192, 192, 1)',
-                      'rgba(153, 102, 255, 1)',
-                      'rgba(255, 159, 64, 1)'
-                  ],
+                  backgroundColor:'rgba(255, 99, 132, 0.2)',
+                  borderColor: 'rgba(255,99,132,1)',
                   borderWidth: 1
               }]
           },
@@ -397,22 +330,8 @@ block script
               datasets: [{
                   label: '# Buffer Stable Time (ms) ',
                   data: !{buffer_stable_time_graph},
-                  backgroundColor: [
-                      'rgba(255, 99, 132, 0.2)',
-                      'rgba(54, 162, 235, 0.2)',
-                      'rgba(255, 206, 86, 0.2)',
-                      'rgba(75, 192, 192, 0.2)',
-                      'rgba(153, 102, 255, 0.2)',
-                      'rgba(255, 159, 64, 0.2)'
-                  ],
-                  borderColor: [
-                      'rgba(255,99,132,1)',
-                      'rgba(54, 162, 235, 1)',
-                      'rgba(255, 206, 86, 1)',
-                      'rgba(75, 192, 192, 1)',
-                      'rgba(153, 102, 255, 1)',
-                      'rgba(255, 159, 64, 1)'
-                  ],
+                  backgroundColor:'rgba(255, 99, 132, 0.2)',
+                  borderColor: 'rgba(255,99,132,1)',
                   borderWidth: 1
               }]
           },
@@ -432,22 +351,8 @@ block script
               datasets: [{
                   label: '# Playback Rate (ms) ',
                   data: !{playback_rate_graph},
-                  backgroundColor: [
-                      'rgba(255, 99, 132, 0.2)',
-                      'rgba(54, 162, 235, 0.2)',
-                      'rgba(255, 206, 86, 0.2)',
-                      'rgba(75, 192, 192, 0.2)',
-                      'rgba(153, 102, 255, 0.2)',
-                      'rgba(255, 159, 64, 0.2)'
-                  ],
-                  borderColor: [
-                      'rgba(255,99,132,1)',
-                      'rgba(54, 162, 235, 1)',
-                      'rgba(255, 206, 86, 1)',
-                      'rgba(75, 192, 192, 1)',
-                      'rgba(153, 102, 255, 1)',
-                      'rgba(255, 159, 64, 1)'
-                  ],
+                  backgroundColor:'rgba(255, 99, 132, 0.2)',
+                  borderColor: 'rgba(255,99,132,1)',
                   borderWidth: 1
               }]
           },
@@ -467,22 +372,8 @@ block script
               datasets: [{
                   label: '# Buffer Level ',
                   data: !{buffer_level_avg_graph},
-                  backgroundColor: [
-                      'rgba(255, 99, 132, 0.2)',
-                      'rgba(54, 162, 235, 0.2)',
-                      'rgba(255, 206, 86, 0.2)',
-                      'rgba(75, 192, 192, 0.2)',
-                      'rgba(153, 102, 255, 0.2)',
-                      'rgba(255, 159, 64, 0.2)'
-                  ],
-                  borderColor: [
-                      'rgba(255,99,132,1)',
-                      'rgba(54, 162, 235, 1)',
-                      'rgba(255, 206, 86, 1)',
-                      'rgba(75, 192, 192, 1)',
-                      'rgba(153, 102, 255, 1)',
-                      'rgba(255, 159, 64, 1)'
-                  ],
+                  backgroundColor:'rgba(255, 99, 132, 0.2)',
+                  borderColor: 'rgba(255,99,132,1)',
                   borderWidth: 1
               }]
           },
@@ -494,3 +385,27 @@ block script
               }
           }
       });
+
+    //var ctx = document.getElementById("memoryUsage");
+    //var memoryUsage = new Chart(ctx, {
+    //    type: 'line',
+    //data: {
+    //    labels: !{memory_usage_iteration_num},
+    //    datasets: [{
+    //        label: '# Memory Usage (bytes) ',
+    //        data: !{memory_usage_graph},
+    //        backgroundColor:'rgba(255, 99, 132, 0.2)',
+    //        borderColor: 'rgba(255,99,132,1)',
+    //        borderWidth: 1
+    //    }]
+    //},
+    //    options: {
+    //        scales: {
+    //            xAxes: [{
+    //                stacked : true
+    //            }],
+    //        }
+    //    }
+    //});
+
+

@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('ams-backend-final', 'root', '123', {
+const sequelize = new Sequelize('ams-backend', 'root', 'taha@123', {
   host: 'localhost',
   dialect: 'mysql',
   //logging: false,
