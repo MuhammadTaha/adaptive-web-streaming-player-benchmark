@@ -9,11 +9,7 @@ module.exports = function (app) {
   
 
   // ams Routes
-  app.route('/units')
-      .get(ams_con.list_all_units);
-
-
-  app.route('/')
+ app.route('/')
       .get(ams_con.list_all_metrices);
 
 

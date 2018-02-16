@@ -11,18 +11,20 @@ var MetricValue = sequelize.define('matric_values',{
     primaryKey:true,
     autoIncrement:true
   },
-  client_id: {
-    type: Sequelize.BIGINT,
-    allowNull: false,
-    
-  },
+  
   metric_id: {
     type: Sequelize.BIGINT,
     allowNull: false,
   },
-  player_id: {
+  iteration_id: {
     type: Sequelize.BIGINT,
     allowNull: false,
+    
+  },
+  test_id: {
+  type: Sequelize.BIGINT,
+  allowNull: false,
+    
   },
   unit_id: {
     type: Sequelize.BIGINT,

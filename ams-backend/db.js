@@ -1,23 +1,18 @@
-// var mysql = require('mysql');
-
-/*
-exports.connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '123',
-  database: 'ams-backend'
-});
-*/
-
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('ams-backend', 'root', '123', {
+const sequelize = new Sequelize('ams-backend-final', 'root', '123', {
   host: 'localhost',
   dialect: 'mysql',
-
+  //logging: false,
+  logging: console.log,
+    logging: function (str) {
+        
+        console.log(str);
+  },
   define: {
     freezeTableName: true,
     raw: true ,
-    timestamps: false
+    timestamps: false,
+
   },
   pool: {
     max: 5,
@@ -37,11 +32,4 @@ sequelize
   console.error('Unable to connect to the database:', err);
 });
 
-/*
-exports.conn = connection.connect(function(err) {
-  if (err) throw err
-  console.log('You are now connected...')
-})
-*/
-//   module.exports = connection;
-   module.exports = {sequelize,Sequelize};
+module.exports = {sequelize,Sequelize};

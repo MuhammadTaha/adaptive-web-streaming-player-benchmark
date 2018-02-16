@@ -8,57 +8,10 @@ var db = require("../db");
 var sequelize =  db.sequelize;
 
 
-exports.list_all_units = function (req, res) {
-
-  var requestParams = req.params;
-  if (requestParams) {
-    var arr = [];
-    Unit.findAll({ attributes: ['id','name'], raw: true }).then(result => {
-      
-         res.render('index', {metrics : result});
-    });
-  
-  } else {
-    res.status(404).send("No Units exists.");
-  }
-};
-
-
-exports.list_all_playback_delay = function (req, res) {
-
-  var requestParams = req.params;
-  /*
-  if (requestParams) {
-    var sessionId = [];
-    var playback_vals = [];
-    var sData;
-
-    MetricValue.findAll({ attributes: ['session_id','value'], raw: true }).then(result => {
-      
-         result.forEach((result, index) => {
-           
-            sData = "Session: " + result.session_id;
-         	sessionId.push(sData);
-         	playback_vals.push(result.value);
-         
-         });
-         res.render('index', {playback_delays : result, session_vals: JSON.stringify(sessionId), playback_delay_time: JSON.stringify(playback_vals) });
-    });
-  
-  } else {
-    res.status(404).send("No Units exists.");
-  }
-  */
-};
-
-
-
 exports.list_all_metrices = function (req, res) {
 
   var requestParams = req.params;
   
-  console.log("Passed Data:");
-
   var max_test_id=null;
 
   var manifest_iteration_num = [];
@@ -88,7 +41,7 @@ exports.list_all_metrices = function (req, res) {
   var buffer_level_avg_iteration_num = [];
   var buffer_level_avg_graph = [];
 
-  //var final_manifest_loading_delay;
+
 
    sequelize.query('select MAX(test_id) as db_max_test_id from iterations ', { type: sequelize.QueryTypes.SELECT }
  ).then(myTables => {
@@ -106,13 +59,12 @@ exports.list_all_metrices = function (req, res) {
      sequelize.query('select  it.iteration_number as it_num,mv.metric_values as val from metric_values as mv join iterations as it on mv.iteration_id = it.id where mv.metric_id=3 and mv.test_id = ? ', { replacements:  [ max_test_id ] , type: sequelize.QueryTypes.SELECT }
       ).then(manifest_loading_delay => {
 
-           //final_manifest_loading_delay=manifest_loading_delay;
+           
            manifest_loading_delay.forEach((manifest_loading_delay, index) => {
            
            manifest_iteration_num.push("Iteration:" + manifest_loading_delay.it_num);
            manifest_delay_graph.push(manifest_loading_delay.val);
-          console.log(" Manifest Iteration Number :" + manifest_loading_delay.it_num);
-          console.log(" Manifest loading time :" + manifest_loading_delay.val);
+          
          
          });
 
@@ -124,8 +76,7 @@ exports.list_all_metrices = function (req, res) {
            playback_load_delay.forEach((playback_load_delay, index) => {
            playback_iteration_num.push("Iteration:" + playback_load_delay.it_num);
            playback_delay_graph.push(playback_load_delay.val);
-          console.log(" Playback Iteration Number :" + playback_load_delay.it_num);
-          console.log(" Playback loading time :" + playback_load_delay.val);
+          
            });
 
          
@@ -137,8 +88,7 @@ exports.list_all_metrices = function (req, res) {
            dropped_frames.forEach((dropped_frames, index) => {
            dropped_frames_iteration_num.push("Iteration:" + dropped_frames.it_num);
            dropped_frames_graph.push(dropped_frames.val);
-          console.log(" Playback Iteration Number :" + dropped_frames.it_num);
-          console.log(" Playback loading time :" + dropped_frames.val);
+          
            });
 
 
@@ -151,8 +101,7 @@ exports.list_all_metrices = function (req, res) {
            stream_initialization_delay.forEach((stream_initialization_delay, index) => {
            stream_initialization_iteration_num.push("Iteration:" + stream_initialization_delay.it_num);
            stream_initialization_graph.push(stream_initialization_delay.val);
-           //console.log(" Playback Iteration Number :" + stream_initialization_delay.it_num);
-           //console.log(" Playback loading time :" + stream_initialization_delay.val);
+           
            });
 
 
@@ -163,8 +112,7 @@ exports.list_all_metrices = function (req, res) {
            quality_change_delay.forEach((quality_change_delay, index) => {
            qulity_change_iteration_num.push("Iteration:" + quality_change_delay.it_num);
            qulity_change_graph.push(quality_change_delay.val);
-           //console.log(" Playback Iteration Number :" + stream_initialization_delay.it_num);
-           //console.log(" Playback loading time :" + stream_initialization_delay.val);
+           
            });
 
 
@@ -248,41 +196,7 @@ exports.list_all_metrices = function (req, res) {
  });
 
 
-  //res.send("Home");
   
-
-  /*
-  if (requestParams) {
-    
-    var sessionId = [];
-    var playback_vals = [];
-    var sData;
-    
-
- 
-
-    
-    
-    MetricValue.findAll({ attributes: ['session_id','value'], raw: true }).then(result => {
-      
-         result.forEach((result, index) => {
-           
-          sData = "Session: " + result.session_id;
-          sessionId.push(sData);
-          playback_vals.push(result.value);
-         
-         });
-        
-         res.render('index', {playback_delays : result, session_vals: JSON.stringify(sessionId), playback_delay_time: JSON.stringify(playback_vals) });
-   
-
-    });
-
-   
-  } else {
-    res.status(404).send("No Units exists.");
-  }
-  */
  
 
   
