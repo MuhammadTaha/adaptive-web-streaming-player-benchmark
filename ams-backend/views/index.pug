@@ -4,8 +4,8 @@ block content
   h1= title
   p Welcome to Adaptive Media Streaming Reporting System
 
-  p Last Test ID: 1
-  p Test Iterations: 3
+  p Test ID: #{test_id}
+  p Number of Iterations: #{num_iterations}
 
 
   p Metric Results: Manifest Delays
@@ -169,6 +169,23 @@ block content
 
   #container
     <canvas id="bufferLevel" width="100%" height="50"></canvas>
+  //    div
+  //        p Metric Results: Memory Usage:
+  //
+  //
+  //    table(border='1' width='100%')
+  //        thead
+  //            tr
+  //                th Iteration Number
+  //                th Memory Usage
+  //        tbody
+  //            each value, i in memory_usage_details
+  //                tr
+  //                    td= value.it_num
+  //                    td= value.val
+  //
+  //#container
+  //   <canvas id="memoryUsage" width="100%" height="50"></canvas>
 
 block script
   script.
@@ -368,3 +385,27 @@ block script
               }
           }
       });
+
+    //var ctx = document.getElementById("memoryUsage");
+    //var memoryUsage = new Chart(ctx, {
+    //    type: 'line',
+    //data: {
+    //    labels: !{memory_usage_iteration_num},
+    //    datasets: [{
+    //        label: '# Memory Usage (bytes) ',
+    //        data: !{memory_usage_graph},
+    //        backgroundColor:'rgba(255, 99, 132, 0.2)',
+    //        borderColor: 'rgba(255,99,132,1)',
+    //        borderWidth: 1
+    //    }]
+    //},
+    //    options: {
+    //        scales: {
+    //            xAxes: [{
+    //                stacked : true
+    //            }],
+    //        }
+    //    }
+    //});
+
+

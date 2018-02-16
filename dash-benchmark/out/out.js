@@ -16314,9 +16314,9 @@ function start_benchmark() {
     playback_restart();
 }
 
+// for restarting the stream
 function playback_restart() {
 
-    // for restarting the stream
     player.seek(0);
 
     startingTime = Date.now();
@@ -16401,21 +16401,16 @@ player.on(dashjs.MediaPlayer.events.PLAYBACK_SEEKED, function (e) {
 player.on(dashjs.MediaPlayer.events.PLAYBACK_ENDED, function (e) {
 
     setProgressValue(bar, TEST_COUNT, tag + 1, 8, stages);
-
-    console.log("TEST COUNT:" + tag);
-
     updateMetrics("video", player);
 
     if (tag < TEST_COUNT - 1) {
         tag = tag + 1;
-        // delays[tag][0] = Date.now();
         playback_restart();
     } else {
         player.seek(0);
         player.pause();
         tag = 0;
         send_data();
-        // alert("Benchmark completed");
     }
 });
 
