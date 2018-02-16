@@ -3,69 +3,294 @@
 var Client = require('../models/Client');
 var MetricValue = require('../models/MetricValue');
 var Test = require('../models/Test');
+var Iteration = require('../models/Iteration');
+var Player = require('../models/Player');
 var connection = require('../../db');
+var sequelize =  connection.sequelize;
+var async = require("async");
+
+
 
 
 
 
 exports.create_metric_values = function (req, res) {
 
-
-    // var sample_json = '[{"browserId":"5e5829ba2a16038663358183bd054051","browserName":"Gecko","browserVersion":"5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36"},{"manifestLoad":1662,"streamInitialised":361,"playbackStartDelay":0,"qualityChangeDelay":0,"playbackSeekingDelay":0,"playbackRate":1,"bufferStableTime":12,"droppedFrames":0,"bufferLevel":[0,0,0,4.004,8.008],"memoryUsage":[]},{"manifestLoad":0,"streamInitialised":0,"playbackStartDelay":13525,"qualityChangeDelay":14675,"playbackSeekingDelay":25,"playbackRate":1,"bufferStableTime":12,"droppedFrames":0,"bufferLevel":[32.032,31.864,31.864,0,0,3.15,3.15,36.036,36.036,36.036,36.036],"memoryUsage":[]},{"manifestLoad":0,"streamInitialised":0,"playbackStartDelay":18894,"qualityChangeDelay":536,"playbackSeekingDelay":68,"playbackRate":1,"bufferStableTime":12,"droppedFrames":0,"bufferLevel":[36.036,36.036,1.087,1.087,1.087,1.087,1.087,0.724,0],"memoryUsage":[]}]' ;
     var json_body = req.body;
     var text = '';
     var client_tag=0;
-    for (var i=0;  i<json_body.length; i++ ) {
+    var client_id="";
+    var client_name= "";
+    var client_version="";
+    var iteraton_number = 0;
 
-           if(i==0){
+    var test_id=0;
+    var iteration_id=0;
 
-             
+ 
+    iteraton_number=json_body.length - 1;
+    
+
+
+          
+
+             client_id=json_body[0].browserId;
+             client_name = json_body[0].browserName;
+             client_version = json_body[0].browserVersion;
+
             
-             Client.findOne({ where: {ClientID: json_body[i].browserId} }).then(client => {
-              // project will be the first entry of the Projects table with the title 'aProject' || null
+             Client.findOne({ where: {ClientID: json_body[0].browserId} }).then(client => {
+              
                
+              // Client Id already exists... 
+               console.log("Client Found"+ client.id);
+               // Add new Test into database  
+                 Test.create({ client_id: client.id , player_id: 1})
+                  .then(function (newTest) {
                
-               console.log("Client_tag"+ client.id);
+                    console.log("New Test ID:"+ newTest.dataValues.id);
+                    test_id=newTest.dataValues.id;
+                    // Add Iteration number to Iteratio table
+                 
+ 
+                  async.forEach(Object.keys(json_body), function(index, callback) {
+                      
+                      if(index>0){
+
+
+                        Iteration.create({ test_id: test_id, iteration_number: index})
+                        .then(function (newIteration) {
+
+                        console.log("New Iteration ID:"+ newIteration.dataValues.id);
+                        iteration_id=newIteration.dataValues.id;
+
+                        
+
+
+                        
+                        var each_iteration_data = json_body[index];
+                        //console.log("Item: " + JSON.stringify(each_iteration_data[index]));
+                        //console.log("test_id: " + test_id);
+                       
+
+                         async.forEach(Object.keys(each_iteration_data), function(each_iteration_index, callback) {
+
+                         console.log("test_id: " + test_id);
+                         console.log("iteration_id: " + iteration_id);
+                         console.log("each_iteration: " + each_iteration_data[each_iteration_index]);
+                         
+                         if(each_iteration_index=="manifestLoad"){
+
+                           MetricValue.create({   metric_id: 3 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: each_iteration_data[each_iteration_index] });
+                          }
+                          if(each_iteration_index=="streamInitialised"){
+                           MetricValue.create({   metric_id: 4 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: each_iteration_data[each_iteration_index] });
+                           
+                          } 
+                           if(each_iteration_index=="playbackStartDelay"){
+                           MetricValue.create({   metric_id: 1 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: each_iteration_data[each_iteration_index] });
+                           
+                          }
+                          if(each_iteration_index=="qualityChangeDelay"){
+                           MetricValue.create({   metric_id: 5 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: each_iteration_data[each_iteration_index] });
+                           
+                          }
+                          if(each_iteration_index=="playbackSeekingDelay"){
+                           MetricValue.create({   metric_id: 6 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: each_iteration_data[each_iteration_index] });
+                           
+                          } 
+                          if(each_iteration_index=="playbackRate"){
+                           MetricValue.create({   metric_id: 9 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: each_iteration_data[each_iteration_index] });
+                           
+                          }  
+                          if(each_iteration_index=="bufferStableTime"){
+                            MetricValue.create({   metric_id: 7 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: each_iteration_data[each_iteration_index] });
+                           
+                          } 
+                          if(each_iteration_index=="droppedFrames"){
+                             MetricValue.create({   metric_id: 2 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: each_iteration_data[each_iteration_index] });
+                           
+                          }       
+                           
+                          if(each_iteration_index=="bufferLevel"){
+
+                              var buffer_level=each_iteration_data[each_iteration_index];
+                             
+                              async.forEach(Object.keys(buffer_level), function(each_buffer_index, callback) {
+
+                                 //console.log("Buffer Level"+ buffer_level[each_buffer_index]);
+                                  MetricValue.create({   metric_id: 8 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: buffer_level[each_buffer_index] });
+                         
+
+
+                                },function(err) {
+                                //When done
+                             })
+
+                           
+                          }   
+                        
+                          
+                          
+                           
+                                                  
+
+                         },function(err) {
+                            //When done
+                         })
+
+
+                       })
+
+                      }
+
+
+                      
+                   //Play around with the color and action
+                  }, function(err) {
+                      //When done
+                  });
+
+
+                    
+ 
+                   
+
+                 
+
+
+      })   
                
 
 
               }).catch(function(err) {
-                // print th error details
-                // console.log(err);
                 
-                
+                // Error if no Client ID found
+                // Add new Client ID to database
+
+                 
+             Client.create({ ClientID: client_id , name: client_name, version: client_version })
+                 .then(function (newClient) {
+              
+
+                 console.log("Data Values:"+ newClient.dataValues.id);
+                      // Add new Test into database  
+                       Test.create({ client_id: newClient.dataValues.id , player_id: 1})
+                        .then(function (newTest) {
+                     
+                          console.log("New Test ID:"+ newTest.dataValues.id);
+                          test_id=newTest.dataValues.id;
+                          
+
+                         async.forEach(Object.keys(json_body), function(index, callback) {
+
+                             if(index>0){
+                                
+
+                                 Iteration.create({ test_id: newTest.dataValues.id , iteration_number: index})
+                                    .then(function (newIteration) {
+
+                                        console.log("New Iteration ID:"+ newIteration.dataValues.id);
+                                        iteration_id=newIteration.dataValues.id;
+                                        
+                                       
+
+
+                                var each_iteration_data = json_body[index];
+                                async.forEach(Object.keys(each_iteration_data), function(each_iteration_index, callback) {
+
+                                           console.log("test_id: " + test_id);
+                                           console.log("each_iteration: " + each_iteration_data[each_iteration_index]);
+                                           
+                                           if(each_iteration_index=="manifestLoad"){
+
+                                             MetricValue.create({   metric_id: 3 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: each_iteration_data[each_iteration_index] });
+                                            }
+                                            if(each_iteration_index=="streamInitialised"){
+                                             MetricValue.create({   metric_id: 4 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: each_iteration_data[each_iteration_index] });
+                                             
+                                            } 
+                                             if(each_iteration_index=="playbackStartDelay"){
+                                             MetricValue.create({   metric_id: 1 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: each_iteration_data[each_iteration_index] });
+                                             
+                                            }
+                                            if(each_iteration_index=="qualityChangeDelay"){
+                                             MetricValue.create({   metric_id: 5 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: each_iteration_data[each_iteration_index] });
+                                             
+                                            }
+                                            if(each_iteration_index=="playbackSeekingDelay"){
+                                             MetricValue.create({   metric_id: 6 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: each_iteration_data[each_iteration_index] });
+                                             
+                                            } 
+                                            if(each_iteration_index=="playbackRate"){
+                                             MetricValue.create({   metric_id: 9 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: each_iteration_data[each_iteration_index] });
+                                             
+                                            }  
+                                            if(each_iteration_index=="bufferStableTime"){
+                                              MetricValue.create({   metric_id: 7 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: each_iteration_data[each_iteration_index] });
+                                             
+                                            } 
+                                            if(each_iteration_index=="droppedFrames"){
+                                               MetricValue.create({   metric_id: 2 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: each_iteration_data[each_iteration_index] });
+                                             
+                                            }       
+                                             
+                                            if(each_iteration_index=="bufferLevel"){
+
+                                                var buffer_level=each_iteration_data[each_iteration_index];
+                                               
+                                                async.forEach(Object.keys(buffer_level), function(each_buffer_index, callback) {
+
+                                                   //console.log("Buffer Level"+ buffer_level[each_buffer_index]);
+                                                    MetricValue.create({   metric_id: 8 ,  iteration_id: iteration_id ,   test_id: test_id , unit_id: 1, metric_values: buffer_level[each_buffer_index] });
+                                           
+
+
+                                                  },function(err) {
+                                                  //When done
+                                               })
+
+                                             
+                                            }   
+
+                                          },function(err) {
+                                              //When done
+                                          })
+                              
+
+                               })
+                             // end of index check
+                             }
 
 
 
-                
-            });      
+                         },function(err) {
+                           //When done
+                       }) 
 
-             console.log("Client_tag"+ client_tag);
- 
-                 // Add data to test table 
-/*                Test.create( client_id: request['client_id'] , player_id: 1)
-                    .then(function (newTest) {
 
-                    });*/
 
-      
-             // Add data to iterations table
 
-            
-              console.log("Got a response: ", json_body[i].browserId);
+               })
 
-           }
-           else{
 
-            // Ádd data to metric_values tables 
+            })
 
-            console.log("Got a response: ", json_body[i].manifestLoad);
 
-           }
+
+
+
+
+
+              });  
+
+
 
            
       
-       }
+    
+    
+    
     res.send(req.body);
 
 

@@ -64,6 +64,9 @@ exports.list_all_metrices = function (req, res) {
            
            manifest_iteration_num.push("Iteration:" + manifest_loading_delay.it_num);
            manifest_delay_graph.push(manifest_loading_delay.val);
+
+           console.log(" Manifest Load Delay Val :" + manifest_loading_delay.val);
+           console.log(" Manifest Load Delay It Num:" + manifest_loading_delay.it_num);
           
          
          });

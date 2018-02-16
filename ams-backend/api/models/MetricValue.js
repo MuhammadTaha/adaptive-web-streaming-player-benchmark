@@ -4,7 +4,7 @@ var db = require("../../db");
 var sequelize =  db.sequelize,
 Sequelize =  db.Sequelize ;
 
-var MetricValue = sequelize.define('matric_values',{
+var MetricValue = sequelize.define('metric_values',{
   id: {
     type: Sequelize.BIGINT,
     allowNull: false,
