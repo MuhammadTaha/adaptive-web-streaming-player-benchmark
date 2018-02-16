@@ -16204,8 +16204,6 @@ var storage_item_playback_delay = "playback_delay_time_";
 var processInfo = '';
 
 // Initializing Player
-// let url = "http://dash.edgesuite.net/envivio/dashpr/clear/Manifest.mpd";
-// let url = "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd";
 var url = "http://demo.unified-streaming.com/video/ateam/ateam.ism/ateam.mpd";
 var player = dashjs.MediaPlayer().create();
 player.initialize(document.querySelector('#dashPlayer'), url, false);
