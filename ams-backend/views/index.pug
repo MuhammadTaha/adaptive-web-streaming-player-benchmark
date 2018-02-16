@@ -4,177 +4,177 @@ block content
   h1= title
   p Welcome to Adaptive Media Streaming Reporting System
 
-  p Last Test ID: 
-  p Test Iterations: 
-  
+  p Last Test ID: 1
+  p Test Iterations: 3
 
-  p Metric Results: Manifest Delays:
+
+  p Metric Results: Manifest Delays
   table(border='1' width='100%')
-    thead 
+    thead
          tr
             th Iteration Number
             th Manifest Delay (ms)
     tbody
         each value, i in manifest_delay_detail
             tr
-               td= value.it_num 
-               td= value.val    
+               td= value.it_num
+               td= value.val
 
 
-  
+
   #container
     <canvas id="myChart" width="100%" height="40"></canvas>
-  
+
   div
-    p Metric Results: Playback Delays: 
-    
+    p Metric Results: Playback Delays
+
 
   table(border='1' width='100%')
-    thead 
+    thead
          tr
             th Iteration Number
             th Playback Delay (ms)
     tbody
-        each value, i in playback_delay_detail  
+        each value, i in playback_delay_detail
             tr
-               td= value.it_num 
-               td= value.val 
+               td= value.it_num
+               td= value.val
 
-  #container  
+  #container
     <canvas id="myChart1" width="100%" height="50"></canvas>
 
   div
-    p Metric Results: Dropped Frames: 
-    
+    p Metric Results: Dropped Frames:
+
 
   table(border='1' width='100%')
-    thead 
+    thead
          tr
             th Iteration Number
-            th Dropped Frames 
+            th Dropped Frames
     tbody
-        each value, i in dropped_frames_detail  
+        each value, i in dropped_frames_detail
             tr
-               td= value.it_num 
-               td= value.val 
+               td= value.it_num
+               td= value.val
 
-  #container  
-    <canvas id="droppedFrames" width="100%" height="50"></canvas>  
+  #container
+    <canvas id="droppedFrames" width="100%" height="50"></canvas>
 
   div
-    p Metric Results: Stream Initialization Delay: 
-    
+    p Metric Results: Stream Initialization Delay:
+
 
   table(border='1' width='100%')
-    thead 
+    thead
          tr
             th Iteration Number
-            th Stream Initialization Delay 
+            th Stream Initialization Delay
     tbody
-        each value, i in stream_initialization_delay_detail  
+        each value, i in stream_initialization_delay_detail
             tr
-               td= value.it_num 
-               td= value.val 
+               td= value.it_num
+               td= value.val
 
-  #container  
-    <canvas id="streamInitialization" width="100%" height="50"></canvas>   
+  #container
+    <canvas id="streamInitialization" width="100%" height="50"></canvas>
 
   div
-    p Metric Results: Quality Change Delay: 
-    
+    p Metric Results: Quality Change Delay:
+
 
   table(border='1' width='100%')
-    thead 
+    thead
          tr
             th Iteration Number
-            th Quality Change Delay 
+            th Quality Change Delay
     tbody
-        each value, i in quality_change_delay_details  
+        each value, i in quality_change_delay_details
             tr
-               td= value.it_num 
-               td= value.val 
+               td= value.it_num
+               td= value.val
 
-  #container  
-    <canvas id="qualityChangeDelay" width="100%" height="50"></canvas> 
+  #container
+    <canvas id="qualityChangeDelay" width="100%" height="50"></canvas>
 
 
   div
-    p Metric Results: Playback Seeking Delay: 
-    
+    p Metric Results: Playback Seeking Delay:
+
 
   table(border='1' width='100%')
-    thead 
+    thead
          tr
             th Iteration Number
-            th Playback Seeking Delay 
+            th Playback Seeking Delay
     tbody
-        each value, i in playback_seeking_delay_details  
+        each value, i in playback_seeking_delay_details
             tr
-               td= value.it_num 
-               td= value.val 
+               td= value.it_num
+               td= value.val
 
-  #container  
-    <canvas id="playBackSeekingDelay" width="100%" height="50"></canvas>     
+  #container
+    <canvas id="playBackSeekingDelay" width="100%" height="50"></canvas>
 
   div
-    p Metric Results: Buffer Stable Time: 
-    
+    p Metric Results: Buffer Stable Time:
+
 
   table(border='1' width='100%')
-    thead 
+    thead
          tr
             th Iteration Number
-            th Buffer Stable Time 
+            th Buffer Stable Time
     tbody
-        each value, i in buffer_stable_time_details  
+        each value, i in buffer_stable_time_details
             tr
-               td= value.it_num 
-               td= value.val 
+               td= value.it_num
+               td= value.val
 
-  #container  
-    <canvas id="bufferStabletime" width="100%" height="50"></canvas> 
+  #container
+    <canvas id="bufferStabletime" width="100%" height="50"></canvas>
 
   div
-    p Metric Results: Playback Rate: 
-    
+    p Metric Results: Playback Rate:
+
 
   table(border='1' width='100%')
-    thead 
+    thead
          tr
             th Iteration Number
-            th Playback Rate 
+            th Playback Rate
     tbody
-        each value, i in playback_rate_details  
+        each value, i in playback_rate_details
             tr
-               td= value.it_num 
-               td= value.val 
+               td= value.it_num
+               td= value.val
 
-  #container  
-    <canvas id="playBackRate" width="100%" height="50"></canvas>   
+  #container
+    <canvas id="playBackRate" width="100%" height="50"></canvas>
 
   div
-    p Metric Results: Buffer Level: 
-    
+    p Metric Results: Buffer Level:
+
 
   table(border='1' width='100%')
-    thead 
+    thead
          tr
             th Iteration Number
-            th Buffer Level 
+            th Buffer Level
     tbody
-        each value, i in buffer_level_avg_details  
+        each value, i in buffer_level_avg_details
             tr
-               td= value.it_num 
-               td= value.val 
+               td= value.it_num
+               td= value.val
 
-  #container  
-    <canvas id="bufferLevel" width="100%" height="50"></canvas>    
+  #container
+    <canvas id="bufferLevel" width="100%" height="50"></canvas>
 
 block script
-  script.  
+  script.
         var ctx = document.getElementById("myChart");
         var myChart = new Chart(ctx, {
-          type: 'bar',
+          type: 'line',
           data: {
               labels: !{manifest_iteration_num},
               datasets: [{
@@ -201,21 +201,16 @@ block script
           },
           options: {
               scales: {
-                   xAxes: [{
-                          barThickness : 50
-                  }],
                   yAxes: [{
-                      ticks: {
-                          beginAtZero:true
-                      }
-                  }]
-              }
+                      stacked: true
+                   }]
+               }
           }
       });
 
      var ctx = document.getElementById("myChart1");
         var myChart = new Chart(ctx, {
-          type: 'bar',
+          type: 'line',
           data: {
               labels: !{playback_iteration_num},
               datasets: [{
@@ -243,21 +238,16 @@ block script
           options: {
               scales: {
                   xAxes: [{
-                        barThickness : 50
+                        stacked: true
                   }],
-                  yAxes: [{
-                      ticks: {
-                          beginAtZero:true
-                      }
-                  }]
               }
           }
-      });      
+      });
 
 
       var ctx = document.getElementById("droppedFrames");
         var droppedFrames = new Chart(ctx, {
-          type: 'bar',
+          type: 'line',
           data: {
               labels: !{dropped_frames_iteration_num},
               datasets: [{
@@ -285,20 +275,15 @@ block script
           options: {
               scales: {
                   xAxes: [{
-                        barThickness : 50
+                        stacked: true
                   }],
-                  yAxes: [{
-                      ticks: {
-                          beginAtZero:true
-                      }
-                  }]
               }
           }
-      }); 
- 
+      });
+
       var ctx = document.getElementById("streamInitialization");
         var streamInitialization = new Chart(ctx, {
-          type: 'bar',
+          type: 'line',
           data: {
               labels: !{stream_initialization_iteration_num},
               datasets: [{
@@ -325,21 +310,16 @@ block script
           },
           options: {
               scales: {
-                  xAxes: [{
-                        barThickness : 50
-                  }],
-                  yAxes: [{
-                      ticks: {
-                          beginAtZero:true
-                      }
-                  }]
+                    xAxes: [{
+                        stacked: true
+                    }],
               }
           }
-      }); 
+      });
 
       var ctx = document.getElementById("qualityChangeDelay");
         var qualityChangeDelay = new Chart(ctx, {
-          type: 'bar',
+          type: 'line',
           data: {
               labels: !{qulity_change_iteration_num},
               datasets: [{
@@ -367,20 +347,15 @@ block script
           options: {
               scales: {
                   xAxes: [{
-                        barThickness : 50
+                        stacked : true
                   }],
-                  yAxes: [{
-                      ticks: {
-                          beginAtZero:true
-                      }
-                  }]
               }
           }
-      }); 
+      });
 
       var ctx = document.getElementById("playBackSeekingDelay");
         var playBackSeekingDelay = new Chart(ctx, {
-          type: 'bar',
+          type: 'line',
           data: {
               labels: !{playback_seeking_iteration_num},
               datasets: [{
@@ -408,20 +383,15 @@ block script
           options: {
               scales: {
                   xAxes: [{
-                        barThickness : 50
+                        stacked : true
                   }],
-                  yAxes: [{
-                      ticks: {
-                          beginAtZero:true
-                      }
-                  }]
               }
           }
-      }); 
+      });
 
       var ctx = document.getElementById("bufferStabletime");
         var bufferStabletime = new Chart(ctx, {
-          type: 'bar',
+          type: 'line',
           data: {
               labels: !{buffer_stable_time_iteration_num},
               datasets: [{
@@ -449,19 +419,14 @@ block script
           options: {
               scales: {
                   xAxes: [{
-                        barThickness : 50
+                        stacked : true
                   }],
-                  yAxes: [{
-                      ticks: {
-                          beginAtZero:true
-                      }
-                  }]
               }
           }
       });
       var ctx = document.getElementById("playBackRate");
         var playBackRate = new Chart(ctx, {
-          type: 'bar',
+          type: 'line',
           data: {
               labels: !{playback_rate_iteration_num},
               datasets: [{
@@ -489,19 +454,14 @@ block script
           options: {
               scales: {
                   xAxes: [{
-                        barThickness : 50
+                        stacked : true
                   }],
-                  yAxes: [{
-                      ticks: {
-                          beginAtZero:true
-                      }
-                  }]
               }
           }
       });
       var ctx = document.getElementById("bufferLevel");
         var bufferLevel = new Chart(ctx, {
-          type: 'bar',
+          type: 'line',
           data: {
               labels: !{buffer_level_avg_iteration_num},
               datasets: [{
@@ -529,13 +489,8 @@ block script
           options: {
               scales: {
                   xAxes: [{
-                        barThickness : 50
+                        stacked : true
                   }],
-                  yAxes: [{
-                      ticks: {
-                          beginAtZero:true
-                      }
-                  }]
               }
           }
       });
