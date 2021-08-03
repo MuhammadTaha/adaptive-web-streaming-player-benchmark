@@ -52,7 +52,7 @@
     "time-grunt": "^1.2.0",
     "uglify-js": "^2.4.21",
     "webpack": "^1.12.13",
-    "xmldom": "^0.1.16"
+    "xmldom": "^0.6.0"
   },
   "dependencies": {
     "codem-isoboxer": "0.3.5",
